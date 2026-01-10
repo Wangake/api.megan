@@ -1,14 +1,16 @@
-// utils/response.js - COMPLETE CORRECTED FILE
+// Standard response format for all APIs
 function createResponse(data, endpoint, query = {}, startTime) {
     const response = {
+        // Status
         success: data.success !== undefined ? data.success : true,
         status: data.success ? "success" : "error",
         results: data.results ? Object.keys(data.results).length : 1,
         timestamp: new Date().toISOString(),
         request_id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         
+        // API Info (FIRST - like you wanted)
         api: {
-            name: "Megan API",
+            name: "MegaDownload API",
             author: "Wanga",
             contact: {
                 whatsapp: "Chanel whatsapp Chane",
@@ -21,6 +23,7 @@ function createResponse(data, endpoint, query = {}, startTime) {
             rate_limit: "100/hour"
         },
         
+        // Data
         data: data.downloadURL ? {
             title: data.title,
             downloadURL: data.downloadURL,
@@ -29,6 +32,7 @@ function createResponse(data, endpoint, query = {}, startTime) {
             duration: data.duration || null
         } : data.results || data,
         
+        // Request Info
         request: {
             endpoint: endpoint,
             parameters: query,
@@ -37,6 +41,7 @@ function createResponse(data, endpoint, query = {}, startTime) {
         }
     };
     
+    // Add error if exists
     if (data.error) {
         response.error = {
             message: data.error,
@@ -48,4 +53,4 @@ function createResponse(data, endpoint, query = {}, startTime) {
     return response;
 }
 
-module.exports = { createResponse };API
+module.exports = { createResponse };
