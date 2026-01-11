@@ -12,9 +12,7 @@
     "test:generators": "jest --testPathPattern=generators",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "deploy": "git push origin main",
-    "seed": "node scripts/seed-data.js",
-    "health": "node scripts/health-check.js"
+    "deploy": "git push origin main"
   },
   "keywords": [
     "api",
@@ -86,8 +84,7 @@
     
     "mime-types": "^2.1.35",
     "user-agents": "^1.0.1297",
-    "luhn": "^2.5.0",
-    "geoip-lite": "^1.4.9",
+    "luhn-js": "^2.0.0",
     "cheerio": "^1.0.0-rc.12",
     "node-html-parser": "^6.1.13"
   },
