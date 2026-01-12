@@ -3,49 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Megan API - All-in-One API Platform</title>
+    <title>Megan API - Complete Developer Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Reset and base styles */
+        /* Dark Blue Theme */
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #10b981;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-dark: #334155;
+            --gray-light: #cbd5e1;
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --code-bg: #1e293b;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #10b981;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --gray: #6b7280;
-            --gray-light: #e5e7eb;
-            --border: #d1d5db;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--light);
-            color: var(--dark);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
         /* Header */
         .header {
-            background: white;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             box-shadow: var(--shadow);
         }
 
@@ -59,81 +68,109 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
         }
 
         .logo-text h1 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            color: var(--dark);
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
         }
 
         .logo-text .tagline {
             font-size: 0.875rem;
-            color: var(--gray);
+            color: var(--gray-light);
+            opacity: 0.9;
         }
 
         .stats {
             display: flex;
             gap: 2rem;
-            align-items: center;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         .stat {
             text-align: center;
+            min-width: 80px;
         }
 
         .stat-number {
             font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
+            font-weight: 800;
+            color: var(--primary-light);
+            margin-bottom: 2px;
         }
 
         .stat-label {
-            font-size: 0.875rem;
-            color: var(--gray);
+            font-size: 0.75rem;
+            color: var(--gray-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
         }
 
-        /* Hero Section */
+        /* Hero */
         .hero {
-            padding: 3rem 0;
+            padding: 4rem 0;
             text-align: center;
-            background: white;
-            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            z-index: -1;
         }
 
         .hero h2 {
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(to right, #fff 30%, var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 1.125rem;
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto 2rem;
+            font-size: 1.25rem;
+            color: var(--gray-light);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            opacity: 0.9;
         }
 
         /* Search */
         .search-container {
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
         }
 
         .search-box {
@@ -142,90 +179,118 @@
 
         .search-box i {
             position: absolute;
-            left: 1rem;
+            left: 1.25rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray);
+            z-index: 2;
         }
 
         .search-box input {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 3rem;
+            padding: 1rem 1.25rem 1rem 3.5rem;
+            background: rgba(30, 41, 59, 0.8);
             border: 2px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1rem;
-            transition: all 0.2s;
+            color: var(--light);
+            transition: all 0.3s;
         }
 
         .search-box input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: rgba(30, 41, 59, 0.95);
         }
 
         /* API Grid */
         .api-grid {
-            padding: 3rem 0;
+            padding: 2rem 0 4rem;
         }
 
         .category {
             margin-bottom: 3rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .category:hover {
+            transform: translateY(-2px);
+            border-color: rgba(59, 130, 246, 0.3);
         }
 
         .category-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
+            gap: 15px;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
             border-bottom: 2px solid var(--border);
         }
 
         .category-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow);
         }
 
         .category-title {
-            font-size: 1.5rem;
+            flex: 1;
+            font-size: 1.75rem;
             font-weight: 700;
-            color: var(--dark);
+            color: var(--light);
         }
 
         .category-count {
-            background: var(--gray-light);
-            color: var(--gray);
-            padding: 0.25rem 0.75rem;
+            background: var(--primary-dark);
+            color: var(--primary-light);
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
+            border: 1px solid var(--primary);
         }
 
         .endpoints-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.5rem;
         }
 
         .endpoint-card {
-            background: white;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.2s;
+            padding: 1.75rem;
+            transition: all 0.3s;
             position: relative;
+            overflow: hidden;
         }
 
         .endpoint-card:hover {
-            transform: translateY(-2px);
+            border-color: var(--primary-light);
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .endpoint-card:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
         }
 
         .endpoint-header {
@@ -236,65 +301,105 @@
         }
 
         .endpoint-name {
-            font-family: 'Monaco', 'Menlo', monospace;
-            background: var(--gray-light);
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            background: var(--code-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             font-size: 0.875rem;
             font-weight: 600;
-            color: var(--dark);
+            color: var(--primary-light);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            flex: 1;
+            margin-right: 1rem;
         }
 
         .endpoint-method {
             background: var(--primary);
             color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            min-width: 70px;
+            text-align: center;
         }
 
         .endpoint-description {
-            color: var(--gray);
-            font-size: 0.875rem;
+            color: var(--gray-light);
+            font-size: 0.95rem;
             margin-bottom: 1.5rem;
-            line-height: 1.5;
+            line-height: 1.6;
+            min-height: 60px;
+        }
+
+        .endpoint-params {
+            margin-bottom: 1.5rem;
+        }
+
+        .params-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .params-list {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--gray-light);
+            background: rgba(30, 41, 59, 0.5);
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
         }
 
         .try-api-btn {
             width: 100%;
-            padding: 0.75rem;
-            background: var(--primary);
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
         }
 
         .try-api-btn:hover {
-            background: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
         }
 
-        /* Test Panel (Modal) */
+        .try-api-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Test Panel */
         .test-panel {
             position: fixed;
             top: 0;
-            right: -500px;
-            width: 500px;
+            right: -600px;
+            width: 600px;
             height: 100vh;
-            background: white;
-            box-shadow: var(--shadow-lg);
-            transition: right 0.3s ease;
-            z-index: 1000;
+            background: var(--dark);
+            border-left: 1px solid var(--border);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
         }
 
         .test-panel.active {
@@ -302,178 +407,335 @@
         }
 
         .test-header {
-            padding: 1.5rem;
+            padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.95);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .test-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--dark);
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .test-title i {
+            color: var(--primary-light);
         }
 
         .close-btn {
-            background: none;
-            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             font-size: 1.5rem;
-            color: var(--gray);
+            color: var(--gray-light);
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
 
         .close-btn:hover {
-            background: var(--gray-light);
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: var(--error);
         }
 
         .test-content {
             flex: 1;
             overflow-y: auto;
-            padding: 1.5rem;
+            padding: 2rem;
+        }
+
+        .endpoint-url-container {
+            background: var(--code-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            position: relative;
+        }
+
+        .endpoint-url-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .endpoint-url {
-            background: var(--dark);
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.875rem;
+            font-family: 'SF Mono', monospace;
+            color: var(--primary-light);
+            font-size: 0.95rem;
             word-break: break-all;
+            line-height: 1.5;
         }
 
-        .param-section {
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .param-field {
-            margin-bottom: 1rem;
-        }
-
-        .param-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--gray);
-        }
-
-        .param-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.875rem;
-        }
-
-        .param-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .test-actions {
-            display: flex;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .send-btn {
-            flex: 1;
-            padding: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .send-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .secondary-btn {
-            padding: 1rem;
-            background: var(--gray-light);
-            color: var(--dark);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .secondary-btn:hover {
-            background: #d1d5db;
-        }
-
-        .response-section {
-            margin-top: 2rem;
-        }
-
-        .response-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .response-title {
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .copy-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
+        .copy-url-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary-light);
             padding: 0.5rem 1rem;
             border-radius: 6px;
             font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-url-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--light);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-title i {
+            color: var(--primary-light);
+        }
+
+        .param-grid {
+            display: grid;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .param-field {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            transition: border-color 0.3s;
+        }
+
+        .param-field:focus-within {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .param-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .param-name {
+            font-weight: 700;
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .param-required {
+            background: var(--error);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .param-description {
+            color: var(--gray-light);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .param-input-container {
+            position: relative;
+        }
+
+        .param-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--light);
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .param-input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .param-input.select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 3rem;
+        }
+
+        .test-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .send-btn {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+            padding: 1.25rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--gray-light);
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--gray);
+            color: var(--light);
+        }
+
+        .response-section {
+            background: var(--code-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .response-header {
+            padding: 1rem 1.5rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .response-title {
+            font-weight: 700;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .response-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .copy-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary-light);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .copy-btn:hover {
-            background: #0da271;
+            background: var(--primary);
+            color: white;
         }
 
         .response-output {
-            background: var(--dark);
-            color: #e5e7eb;
-            padding: 1rem;
-            border-radius: 8px;
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.75rem;
-            white-space: pre-wrap;
+            padding: 1.5rem;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
             max-height: 400px;
             overflow-y: auto;
-            line-height: 1.4;
+            color: #e2e8f0;
+            background: #0f172a;
         }
+
+        .response-output .key { color: #60a5fa; }
+        .response-output .string { color: #34d399; }
+        .response-output .number { color: #fbbf24; }
+        .response-output .boolean { color: #f87171; }
+        .response-output .null { color: #94a3b8; }
 
         .overlay {
             position: fixed;
@@ -481,8 +743,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1999;
             display: none;
         }
 
@@ -492,37 +755,130 @@
 
         /* Footer */
         .footer {
-            background: var(--dark);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            margin-top: 3rem;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            margin-top: 4rem;
         }
 
-        .footer p {
-            color: #9ca3af;
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .footer-link {
+            color: var(--gray-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary-light);
+        }
+
+        .copyright {
+            color: var(--gray);
             font-size: 0.875rem;
+            margin-top: 2rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-light);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top-color: var(--primary-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
+        @media (max-width: 1200px) {
+            .test-panel {
+                width: 500px;
+            }
+        }
+
         @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .endpoints-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .test-panel {
                 width: 100%;
                 right: -100%;
             }
             
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .stats {
-                gap: 1rem;
-            }
-            
-            .endpoints-grid {
+            .test-actions {
                 grid-template-columns: 1fr;
+            }
+            
+            .response-status {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 3rem 0;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .category {
+                padding: 1.5rem;
+            }
+            
+            .category-title {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -533,15 +889,17 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">M</div>
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
                     <div class="logo-text">
                         <h1>MEGAN API</h1>
-                        <div class="tagline">All-in-One API Platform by Wanga</div>
+                        <div class="tagline">Complete Developer Platform • By Wanga</div>
                     </div>
                 </div>
                 <div class="stats">
                     <div class="stat">
-                        <div class="stat-number" id="endpointCount">--</div>
+                        <div class="stat-number" id="endpointCount">34</div>
                         <div class="stat-label">Endpoints</div>
                     </div>
                     <div class="stat">
@@ -549,24 +907,24 @@
                         <div class="stat-label">Free Tier</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-number">2.0.0</div>
-                        <div class="stat-label">Version</div>
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Uptime</div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
         <div class="container">
-            <h2>Powerful APIs in One Place</h2>
-            <p>Access 30+ developer tools for AI, images, downloads, search, and utilities. Simple, fast, and reliable.</p>
+            <h2>Everything Developers Need in One API</h2>
+            <p>Validation, generation, conversion, and utility endpoints. Built for speed, reliability, and simplicity.</p>
             
             <div class="search-container">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search APIs...">
+                    <input type="text" id="searchInput" placeholder="Search APIs by name, category, or description...">
                 </div>
             </div>
         </div>
@@ -576,8 +934,11 @@
     <section class="api-grid">
         <div class="container">
             <div id="apiCategories">
-                <!-- Categories will be loaded here by JavaScript -->
-                <div class="loading">Loading APIs...</div>
+                <!-- Categories will be loaded here -->
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading API endpoints...</p>
+                </div>
             </div>
         </div>
     </section>
@@ -586,20 +947,33 @@
     <div class="overlay" id="overlay"></div>
     <div class="test-panel" id="testPanel">
         <div class="test-header">
-            <div class="test-title">Test API</div>
-            <button class="close-btn" id="closePanel">&times;</button>
+            <div class="test-title">
+                <i class="fas fa-flask"></i>
+                <span id="panelTitle">Test API</span>
+            </div>
+            <button class="close-btn" id="closePanel">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="test-content">
-            <div class="endpoint-url" id="testEndpointUrl">/api/endpoint</div>
+            <div class="endpoint-url-container">
+                <div class="endpoint-url-label">
+                    <i class="fas fa-link"></i>
+                    API Endpoint
+                </div>
+                <div class="endpoint-url" id="testEndpointUrl">/api/endpoint</div>
+                <button class="copy-url-btn" id="copyUrlBtn">
+                    <i class="fas fa-copy"></i>
+                    Copy URL
+                </button>
+            </div>
             
-            <div class="param-section">
-                <div class="section-title">
-                    <i class="fas fa-sliders-h"></i>
-                    Parameters
-                </div>
-                <div id="paramFields">
-                    <!-- Dynamic parameter fields will go here -->
-                </div>
+            <div class="section-title">
+                <i class="fas fa-sliders-h"></i>
+                Parameters
+            </div>
+            <div class="param-grid" id="paramGrid">
+                <!-- Parameters will be loaded here -->
             </div>
             
             <div class="test-actions">
@@ -613,15 +987,25 @@
                 </button>
             </div>
             
+            <div class="section-title">
+                <i class="fas fa-code"></i>
+                Response
+            </div>
             <div class="response-section">
                 <div class="response-header">
-                    <div class="response-title">API Response</div>
-                    <button class="copy-btn" id="copyResponse">
-                        <i class="fas fa-copy"></i>
-                        Copy
-                    </button>
+                    <div class="response-title">
+                        <i class="fas fa-server"></i>
+                        API Response
+                    </div>
+                    <div class="response-status">
+                        <div class="status-badge" id="statusBadge">Ready</div>
+                        <button class="copy-btn" id="copyResponseBtn">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
+                    </div>
                 </div>
-                <pre class="response-output" id="responseOutput">Click "Send Request" to see results</pre>
+                <pre class="response-output" id="responseOutput">Click "Send Request" to test the API</pre>
             </div>
         </div>
     </div>
@@ -629,158 +1013,307 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>Powered by Megan API | 2024 - 2025 | Contact: contact@megan.co.ke</p>
+            <div class="footer-content">
+                <div class="footer-logo">MEGAN API</div>
+                <div class="footer-links">
+                    <a href="https://api.megan.co.ke" class="footer-link">Documentation</a>
+                    <a href="https://chat.whatsapp.com/FtKp4i086Xc0X91t1MTjrU" class="footer-link">Support</a>
+                    <a href="mailto:contact@megan.co.ke" class="footer-link">Contact</a>
+                </div>
+                <div class="copyright">
+                    Powered by Megan API | 2024 - 2025 | All endpoints are live and fully functional
+                </div>
+            </div>
         </div>
     </footer>
 
     <script>
-        // API Configuration - YOU WILL EDIT THIS!
+        // Complete API Configuration based on your test file
         const apiConfig = {
+            baseUrl: window.location.origin, // Uses current domain
             categories: [
                 {
-                    id: 'ai',
-                    name: 'AI APIs',
-                    icon: 'fas fa-brain',
+                    id: 'tools',
+                    name: 'Tools',
+                    icon: 'fas fa-tools',
                     endpoints: [
                         {
-                            name: 'Copilot',
-                            path: '/api/copilot',
+                            name: 'Base64',
+                            path: '/api/tools/base64',
                             method: 'GET',
-                            description: 'Fast AI for auto response generation',
+                            description: 'Base64 encode or decode text',
                             parameters: [
-                                {
-                                    name: 'prompt',
-                                    type: 'text',
-                                    required: true,
-                                    placeholder: 'Enter your prompt...',
-                                    default: 'Hello, how are you?'
-                                },
-                                {
-                                    name: 'style',
-                                    type: 'select',
-                                    required: false,
-                                    options: ['casual', 'formal', 'creative'],
-                                    default: 'casual'
-                                }
+                                { name: 'text', type: 'text', required: true, description: 'Text to encode/decode', example: 'Hello World' },
+                                { name: 'action', type: 'select', required: true, options: ['encode', 'decode'], default: 'encode', description: 'Action to perform' }
                             ]
                         },
                         {
-                            name: 'Talk AI',
-                            path: '/api/talk-ai',
+                            name: 'QR Code',
+                            path: '/api/tools/qrcode',
                             method: 'GET',
-                            description: 'A friendly fast responding AI assistant',
+                            description: 'Generate QR code from text',
                             parameters: [
-                                {
-                                    name: 'message',
-                                    type: 'text',
-                                    required: true,
-                                    placeholder: 'Type your message...'
-                                }
+                                { name: 'text', type: 'text', required: true, description: 'Text to encode in QR', example: 'https://example.com' },
+                                { name: 'size', type: 'number', required: false, default: '200', description: 'QR code size in pixels' }
                             ]
                         },
                         {
-                            name: 'Gemini',
-                            path: '/api/gemini',
+                            name: 'Hash',
+                            path: '/api/tools/hash',
                             method: 'GET',
-                            description: 'Gemini AI for quick replies',
+                            description: 'Generate hash from text using various algorithms',
                             parameters: [
-                                {
-                                    name: 'query',
-                                    type: 'text',
-                                    required: true,
-                                    placeholder: 'Ask Gemini anything...'
-                                }
+                                { name: 'text', type: 'text', required: true, description: 'Text to hash', example: 'password123' },
+                                { name: 'algorithm', type: 'select', required: true, options: ['md5', 'sha1', 'sha256', 'sha512'], default: 'sha256', description: 'Hash algorithm' }
+                            ]
+                        },
+                        {
+                            name: 'Text Analysis',
+                            path: '/api/tools/analyze',
+                            method: 'GET',
+                            description: 'Analyze text for word count, characters, etc.',
+                            parameters: [
+                                { name: 'text', type: 'text', required: true, description: 'Text to analyze', example: 'This is a sample text for analysis.' }
+                            ]
+                        },
+                        {
+                            name: 'Binary',
+                            path: '/api/tools/binary',
+                            method: 'GET',
+                            description: 'Convert text to binary or binary to text',
+                            parameters: [
+                                { name: 'text', type: 'text', required: true, description: 'Text to convert', example: 'Hello' },
+                                { name: 'action', type: 'select', required: true, options: ['encode', 'decode'], default: 'encode', description: 'Conversion direction' }
+                            ]
+                        },
+                        {
+                            name: 'Morse Code',
+                            path: '/api/tools/morse',
+                            method: 'GET',
+                            description: 'Convert text to morse code or decode morse',
+                            parameters: [
+                                { name: 'text', type: 'text', required: true, description: 'Text to convert', example: 'SOS' },
+                                { name: 'action', type: 'select', required: true, options: ['encode', 'decode'], default: 'encode', description: 'Conversion direction' }
+                            ]
+                        },
+                        {
+                            name: 'Anagram',
+                            path: '/api/tools/anagram',
+                            method: 'GET',
+                            description: 'Find anagrams of a word',
+                            parameters: [
+                                { name: 'word', type: 'text', required: true, description: 'Word to find anagrams for', example: 'listen' }
+                            ]
+                        },
+                        {
+                            name: 'Palindrome',
+                            path: '/api/tools/palindrome',
+                            method: 'GET',
+                            description: 'Check if text is a palindrome',
+                            parameters: [
+                                { name: 'text', type: 'text', required: true, description: 'Text to check', example: 'racecar' },
+                                { name: 'type', type: 'select', required: false, options: ['check', 'generate'], default: 'check', description: 'Check or generate palindrome' }
+                            ]
+                        },
+                        {
+                            name: 'Acronym',
+                            path: '/api/tools/acronym',
+                            method: 'GET',
+                            description: 'Create acronym from phrase',
+                            parameters: [
+                                { name: 'phrase', type: 'text', required: true, description: 'Phrase to convert to acronym', example: 'Application Programming Interface' }
+                            ]
+                        },
+                        {
+                            name: 'UUID',
+                            path: '/api/tools/uuid',
+                            method: 'GET',
+                            description: 'Generate UUIDs',
+                            parameters: [
+                                { name: 'count', type: 'number', required: false, default: '1', description: 'Number of UUIDs to generate' }
                             ]
                         }
                     ]
                 },
                 {
-                    id: 'image',
-                    name: 'Image APIs',
-                    icon: 'fas fa-image',
+                    id: 'validators',
+                    name: 'Validators',
+                    icon: 'fas fa-check-circle',
                     endpoints: [
                         {
-                            name: 'Flux',
-                            path: '/api/flux',
+                            name: 'Email Validator',
+                            path: '/api/validators/email',
                             method: 'GET',
-                            description: 'For generating AI images',
+                            description: 'Validate email address format',
                             parameters: [
-                                {
-                                    name: 'prompt',
-                                    type: 'text',
-                                    required: true,
-                                    placeholder: 'Describe the image...'
-                                },
-                                {
-                                    name: 'size',
-                                    type: 'select',
-                                    required: false,
-                                    options: ['512x512', '768x768', '1024x1024'],
-                                    default: '512x512'
-                                }
+                                { name: 'email', type: 'email', required: true, description: 'Email to validate', example: 'user@example.com' }
                             ]
                         },
                         {
-                            name: 'Firelogo',
-                            path: '/api/firelogo',
+                            name: 'JSON Validator',
+                            path: '/api/validators/json',
                             method: 'GET',
-                            description: 'Fire logo maker',
+                            description: 'Validate JSON string',
                             parameters: [
-                                {
-                                    name: 'text',
-                                    type: 'text',
-                                    required: true,
-                                    placeholder: 'Logo text...'
-                                },
-                                {
-                                    name: 'style',
-                                    type: 'select',
-                                    required: false,
-                                    options: ['fire', 'ice', 'neon'],
-                                    default: 'fire'
-                                }
+                                { name: 'json', type: 'text', required: true, description: 'JSON string to validate', example: '{"name": "John", "age": 30}' }
+                            ]
+                        },
+                        {
+                            name: 'Phone Validator',
+                            path: '/api/validators/phone',
+                            method: 'GET',
+                            description: 'Validate phone number format',
+                            parameters: [
+                                { name: 'phone', type: 'tel', required: true, description: 'Phone number to validate', example: '+254712345678' }
+                            ]
+                        },
+                        {
+                            name: 'URL Validator',
+                            path: '/api/validators/url',
+                            method: 'GET',
+                            description: 'Validate URL format',
+                            parameters: [
+                                { name: 'url', type: 'url', required: true, description: 'URL to validate', example: 'https://example.com' }
+                            ]
+                        },
+                        {
+                            name: 'IP Validator',
+                            path: '/api/validators/ip',
+                            method: 'GET',
+                            description: 'Validate IP address',
+                            parameters: [
+                                { name: 'ip', type: 'text', required: true, description: 'IP address to validate', example: '8.8.8.8' }
+                            ]
+                        },
+                        {
+                            name: 'Credit Card Validator',
+                            path: '/api/validators/credit-card',
+                            method: 'GET',
+                            description: 'Validate credit card number',
+                            parameters: [
+                                { name: 'number', type: 'text', required: true, description: 'Credit card number', example: '4111111111111111' }
+                            ]
+                        },
+                        {
+                            name: 'Password Strength',
+                            path: '/api/validators/password-strength',
+                            method: 'GET',
+                            description: 'Check password strength',
+                            parameters: [
+                                { name: 'password', type: 'password', required: true, description: 'Password to check', example: 'Test123!' }
                             ]
                         }
                     ]
                 },
                 {
-                    id: 'download',
-                    name: 'Download APIs',
-                    icon: 'fas fa-download',
+                    id: 'generators',
+                    name: 'Generators',
+                    icon: 'fas fa-magic',
                     endpoints: [
                         {
-                            name: 'YouTube',
-                            path: '/api/ytdown',
+                            name: 'Random Number',
+                            path: '/api/generators/random-number',
                             method: 'GET',
-                            description: 'YouTube downloader - choose &format=mp3 or mp4',
+                            description: 'Generate random numbers within range',
                             parameters: [
-                                {
-                                    name: 'url',
-                                    type: 'url',
-                                    required: true,
-                                    placeholder: 'YouTube URL...'
-                                },
-                                {
-                                    name: 'format',
-                                    type: 'select',
-                                    required: false,
-                                    options: ['mp3', 'mp4'],
-                                    default: 'mp4'
-                                }
+                                { name: 'min', type: 'number', required: true, default: '1', description: 'Minimum value' },
+                                { name: 'max', type: 'number', required: true, default: '100', description: 'Maximum value' },
+                                { name: 'count', type: 'number', required: false, default: '1', description: 'How many numbers to generate' }
                             ]
                         },
                         {
-                            name: 'Spotify',
-                            path: '/api/spotify',
+                            name: 'Fake Data',
+                            path: '/api/generators/fake-data',
                             method: 'GET',
-                            description: 'Spotify music downloader',
+                            description: 'Generate fake user data',
                             parameters: [
-                                {
-                                    name: 'url',
-                                    type: 'url',
-                                    required: true,
-                                    placeholder: 'Spotify track URL...'
-                                }
+                                { name: 'type', type: 'select', required: true, options: ['user', 'address', 'company'], default: 'user', description: 'Type of data to generate' }
+                            ]
+                        },
+                        {
+                            name: 'Quote',
+                            path: '/api/generators/quote',
+                            method: 'GET',
+                            description: 'Generate random inspirational quote',
+                            parameters: []
+                        },
+                        {
+                            name: 'Joke',
+                            path: '/api/generators/joke',
+                            method: 'GET',
+                            description: 'Generate random joke',
+                            parameters: []
+                        }
+                    ]
+                },
+                {
+                    id: 'web',
+                    name: 'Web Tools',
+                    icon: 'fas fa-globe',
+                    endpoints: [
+                        {
+                            name: 'HTTP Status',
+                            path: '/api/web/http-status',
+                            method: 'GET',
+                            description: 'Get HTTP status code information',
+                            parameters: [
+                                { name: 'code', type: 'number', required: true, description: 'HTTP status code', example: '200' }
+                            ]
+                        },
+                        {
+                            name: 'MIME Type',
+                            path: '/api/web/mime-type',
+                            method: 'GET',
+                            description: 'Get MIME type for file extension',
+                            parameters: [
+                                { name: 'extension', type: 'text', required: true, description: 'File extension', example: 'html' }
+                            ]
+                        },
+                        {
+                            name: 'User Agent',
+                            path: '/api/web/user-agent',
+                            method: 'GET',
+                            description: 'Get random user agent string',
+                            parameters: []
+                        }
+                    ]
+                },
+                {
+                    id: 'time',
+                    name: 'Time Tools',
+                    icon: 'fas fa-clock',
+                    endpoints: [
+                        {
+                            name: 'Timestamp',
+                            path: '/api/time/timestamp',
+                            method: 'GET',
+                            description: 'Get current timestamp',
+                            parameters: []
+                        },
+                        {
+                            name: 'Timezone',
+                            path: '/api/time/timezone',
+                            method: 'GET',
+                            description: 'Convert time between timezones',
+                            parameters: [
+                                { name: 'from', type: 'text', required: true, default: 'UTC', description: 'Source timezone', example: 'UTC' },
+                                { name: 'to', type: 'text', required: true, default: 'Africa/Nairobi', description: 'Target timezone', example: 'Africa/Nairobi' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'media',
+                    name: 'Media',
+                    icon: 'fas fa-photo-video',
+                    endpoints: [
+                        {
+                            name: 'YouTube Search',
+                            path: '/api/media/ytsearch',
+                            method: 'GET',
+                            description: 'Search YouTube videos',
+                            parameters: [
+                                { name: 'q', type: 'text', required: true, description: 'Search query', example: 'music' }
                             ]
                         }
                     ]
@@ -788,9 +1321,9 @@
             ]
         };
 
-        // Current state
+        // Application State
         let currentEndpoint = null;
-        let isLoading = false;
+        let currentResponse = null;
 
         // DOM Elements
         const apiCategoriesEl = document.getElementById('apiCategories');
@@ -798,13 +1331,15 @@
         const testPanel = document.getElementById('testPanel');
         const overlay = document.getElementById('overlay');
         const closePanelBtn = document.getElementById('closePanel');
+        const panelTitleEl = document.getElementById('panelTitle');
         const testEndpointUrlEl = document.getElementById('testEndpointUrl');
-        const paramFieldsEl = document.getElementById('paramFields');
+        const copyUrlBtn = document.getElementById('copyUrlBtn');
+        const paramGridEl = document.getElementById('paramGrid');
         const sendRequestBtn = document.getElementById('sendRequest');
         const openInNewTabBtn = document.getElementById('openInNewTab');
-        const copyResponseBtn = document.getElementById('copyResponse');
+        const statusBadgeEl = document.getElementById('statusBadge');
+        const copyResponseBtn = document.getElementById('copyResponseBtn');
         const responseOutputEl = document.getElementById('responseOutput');
-        const endpointCountEl = document.getElementById('endpointCount');
 
         // Initialize
         function init() {
@@ -813,13 +1348,12 @@
             updateStats();
         }
 
-        // Render all API categories and endpoints
+        // Render all API categories
         function renderAPICategories(filter = '') {
             let totalEndpoints = 0;
             let html = '';
             
             apiConfig.categories.forEach(category => {
-                // Filter endpoints within category
                 const filteredEndpoints = category.endpoints.filter(endpoint => 
                     filter === '' || 
                     endpoint.name.toLowerCase().includes(filter.toLowerCase()) ||
@@ -832,7 +1366,7 @@
                 totalEndpoints += filteredEndpoints.length;
                 
                 html += `
-                    <div class="category">
+                    <div class="category" data-category="${category.id}">
                         <div class="category-header">
                             <div class="category-icon">
                                 <i class="${category.icon}"></i>
@@ -844,17 +1378,30 @@
                 `;
                 
                 filteredEndpoints.forEach(endpoint => {
+                    const paramsText = endpoint.parameters && endpoint.parameters.length > 0
+                        ? endpoint.parameters.map(p => `${p.name}: ${p.type}`).join(', ')
+                        : 'No parameters';
+                    
                     html += `
-                        <div class="endpoint-card">
+                        <div class="endpoint-card" data-endpoint="${endpoint.path}">
                             <div class="endpoint-header">
                                 <div class="endpoint-name">${endpoint.path}</div>
                                 <div class="endpoint-method">${endpoint.method}</div>
                             </div>
-                            <div class="endpoint-description">${endpoint.description}</div>
+                            <div class="endpoint-description">
+                                ${endpoint.description}
+                            </div>
+                            <div class="endpoint-params">
+                                <div class="params-label">
+                                    <i class="fas fa-code"></i>
+                                    Parameters
+                                </div>
+                                <div class="params-list">${paramsText}</div>
+                            </div>
                             <button class="try-api-btn" 
                                     data-endpoint='${JSON.stringify(endpoint)}'>
                                 <i class="fas fa-flask"></i>
-                                Try API
+                                Test API
                             </button>
                         </div>
                     `;
@@ -866,10 +1413,24 @@
                 `;
             });
             
-            apiCategoriesEl.innerHTML = html || '<div class="no-results">No APIs found matching your search.</div>';
-            endpointCountEl.textContent = totalEndpoints;
+            apiCategoriesEl.innerHTML = html || `
+                <div class="category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="category-title">No Results Found</div>
+                    </div>
+                    <p style="text-align: center; color: var(--gray-light); padding: 2rem;">
+                        No APIs match your search. Try a different term.
+                    </p>
+                </div>
+            `;
             
-            // Re-attach event listeners to new buttons
+            // Update endpoint count
+            document.getElementById('endpointCount').textContent = totalEndpoints;
+            
+            // Attach event listeners to new buttons
             document.querySelectorAll('.try-api-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const endpoint = JSON.parse(e.target.closest('.try-api-btn').dataset.endpoint);
@@ -878,47 +1439,80 @@
             });
         }
 
-        // Open test panel with selected endpoint
+        // Open test panel with endpoint
         function openTestPanel(endpoint) {
             currentEndpoint = endpoint;
+            currentResponse = null;
             
-            // Update panel title and URL
+            // Update panel
+            panelTitleEl.textContent = endpoint.name;
             testEndpointUrlEl.textContent = endpoint.path;
             
             // Generate parameter fields
-            let paramFieldsHTML = '';
+            let paramsHTML = '';
             if (endpoint.parameters && endpoint.parameters.length > 0) {
-                endpoint.parameters.forEach((param, index) => {
+                endpoint.parameters.forEach(param => {
+                    let inputHTML = '';
+                    
                     if (param.type === 'select') {
-                        paramFieldsHTML += `
-                            <div class="param-field">
-                                <label class="param-label">${param.name} ${param.required ? '*' : ''}</label>
-                                <select class="param-input" data-param="${param.name}">
-                                    ${param.options.map(opt => 
-                                        `<option value="${opt}" ${opt === param.default ? 'selected' : ''}>${opt}</option>`
-                                    ).join('')}
-                                </select>
-                            </div>
+                        const options = param.options.map(opt => 
+                            `<option value="${opt}" ${opt === param.default ? 'selected' : ''}>${opt}</option>`
+                        ).join('');
+                        
+                        inputHTML = `
+                            <select class="param-input select" data-param="${param.name}">
+                                ${options}
+                            </select>
                         `;
                     } else {
-                        paramFieldsHTML += `
-                            <div class="param-field">
-                                <label class="param-label">${param.name} ${param.required ? '*' : ''}</label>
-                                <input type="${param.type}" 
-                                       class="param-input" 
-                                       data-param="${param.name}"
-                                       placeholder="${param.placeholder || param.name}"
-                                       value="${param.default || ''}">
-                            </div>
+                        const inputType = param.type === 'password' ? 'password' : 
+                                         param.type === 'email' ? 'email' : 
+                                         param.type === 'url' ? 'url' : 
+                                         param.type === 'tel' ? 'tel' : 
+                                         param.type === 'number' ? 'number' : 'text';
+                        
+                        inputHTML = `
+                            <input type="${inputType}" 
+                                   class="param-input" 
+                                   data-param="${param.name}"
+                                   placeholder="${param.example || param.description}"
+                                   value="${param.default || ''}">
                         `;
                     }
+                    
+                    paramsHTML += `
+                        <div class="param-field">
+                            <div class="param-header">
+                                <div class="param-name">${param.name}</div>
+                                ${param.required ? '<div class="param-required">Required</div>' : ''}
+                            </div>
+                            <div class="param-description">${param.description}</div>
+                            <div class="param-input-container">
+                                ${inputHTML}
+                            </div>
+                        </div>
+                    `;
                 });
             } else {
-                paramFieldsHTML = '<p>No parameters required for this endpoint.</p>';
+                paramsHTML = `
+                    <div class="param-field">
+                        <div class="param-description" style="text-align: center; padding: 2rem; color: var(--gray-light);">
+                            <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                            This endpoint doesn't require any parameters.
+                        </div>
+                    </div>
+                `;
             }
             
-            paramFieldsEl.innerHTML = paramFieldsHTML;
-            responseOutputEl.textContent = 'Click "Send Request" to see results';
+            paramGridEl.innerHTML = paramsHTML;
+            
+            // Reset response area
+            statusBadgeEl.textContent = 'Ready';
+            statusBadgeEl.className = 'status-badge status-success';
+            responseOutputEl.innerHTML = 'Click "Send Request" to test the API';
+            copyResponseBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+            sendRequestBtn.disabled = false;
+            sendRequestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Request';
             
             // Show panel
             testPanel.classList.add('active');
@@ -932,60 +1526,142 @@
             overlay.classList.remove('active');
             document.body.style.overflow = 'auto';
             currentEndpoint = null;
+            currentResponse = null;
         }
 
         // Send API request
         async function sendRequest() {
-            if (!currentEndpoint || isLoading) return;
+            if (!currentEndpoint) return;
             
             // Get parameter values
             const params = {};
-            const paramInputs = paramFieldsEl.querySelectorAll('.param-input');
+            const paramInputs = paramGridEl.querySelectorAll('.param-input');
+            let hasErrors = false;
             
             paramInputs.forEach(input => {
                 const paramName = input.dataset.param;
-                params[paramName] = input.value.trim();
+                const value = input.value.trim();
+                
+                // Find parameter definition
+                const paramDef = currentEndpoint.parameters.find(p => p.name === paramName);
+                
+                if (paramDef && paramDef.required && !value) {
+                    input.style.borderColor = 'var(--error)';
+                    input.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.2)';
+                    hasErrors = true;
+                } else {
+                    input.style.borderColor = '';
+                    input.style.boxShadow = '';
+                    if (value) params[paramName] = value;
+                }
             });
+            
+            if (hasErrors) {
+                statusBadgeEl.textContent = 'Error';
+                statusBadgeEl.className = 'status-badge status-error';
+                responseOutputEl.innerHTML = 'Please fill in all required parameters.';
+                return;
+            }
             
             // Build URL
             const queryString = new URLSearchParams(params).toString();
-            const url = currentEndpoint.path + (queryString ? `?${queryString}` : '');
+            const fullUrl = currentEndpoint.path + (queryString ? `?${queryString}` : '');
+            const absoluteUrl = apiConfig.baseUrl + fullUrl;
             
-            // Update UI
-            sendRequestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            testEndpointUrlEl.textContent = fullUrl;
+            
+            // Update UI for loading
             sendRequestBtn.disabled = true;
-            responseOutputEl.textContent = 'Loading...';
+            sendRequestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            statusBadgeEl.textContent = 'Loading';
+            responseOutputEl.innerHTML = 'Making request...';
             
             try {
-                // Make request
-                const response = await fetch(url);
-                const data = await response.json();
+                const startTime = Date.now();
                 
-                // Display response
-                responseOutputEl.textContent = JSON.stringify(data, null, 2);
+                // Make API request
+                const response = await fetch(absoluteUrl, {
+                    method: currentEndpoint.method,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
                 
-                // Syntax highlighting (simple version)
-                responseOutputEl.innerHTML = highlightJSON(JSON.stringify(data, null, 2));
+                const responseTime = Date.now() - startTime;
+                
+                // Try to parse JSON
+                let data;
+                try {
+                    data = await response.json();
+                } catch {
+                    // If not JSON, get as text
+                    const text = await response.text();
+                    data = { raw: text };
+                }
+                
+                // Update UI
+                currentResponse = data;
+                
+                if (response.ok) {
+                    statusBadgeEl.textContent = `Success • ${responseTime}ms`;
+                    statusBadgeEl.className = 'status-badge status-success';
+                } else {
+                    statusBadgeEl.textContent = `Error ${response.status} • ${responseTime}ms`;
+                    statusBadgeEl.className = 'status-badge status-error';
+                }
+                
+                // Format and display response
+                responseOutputEl.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
                 
             } catch (error) {
-                responseOutputEl.textContent = `Error: ${error.message}`;
+                statusBadgeEl.textContent = 'Failed';
+                statusBadgeEl.className = 'status-badge status-error';
+                responseOutputEl.innerHTML = `<span style="color: var(--error)">Error: ${error.message}</span>`;
             } finally {
-                sendRequestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Request';
                 sendRequestBtn.disabled = false;
+                sendRequestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Request';
             }
         }
 
-        // Simple JSON syntax highlighting
-        function highlightJSON(json) {
-            return json
-                .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?)/g, '<span style="color: #61afef;">$1</span>')
-                .replace(/\b(true|false|null)\b/g, '<span style="color: #e06c75;">$1</span>')
-                .replace(/\b(\d+)\b/g, '<span style="color: #d19a66;">$1</span>');
+        // JSON syntax highlighting
+        function syntaxHighlight(json) {
+            if (!json) return '';
+            
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        // Copy URL to clipboard
+        function copyUrl() {
+            const url = apiConfig.baseUrl + testEndpointUrlEl.textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                copyUrlBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyUrlBtn.innerHTML = '<i class="fas fa-copy"></i> Copy URL';
+                }, 2000);
+            });
         }
 
         // Copy response to clipboard
         function copyResponse() {
-            const text = responseOutputEl.textContent;
+            if (!currentResponse) return;
+            
+            const text = JSON.stringify(currentResponse, null, 2);
             navigator.clipboard.writeText(text).then(() => {
                 copyResponseBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
                 setTimeout(() => {
@@ -999,15 +1675,16 @@
             if (!currentEndpoint) return;
             
             const params = {};
-            const paramInputs = paramFieldsEl.querySelectorAll('.param-input');
+            const paramInputs = paramGridEl.querySelectorAll('.param-input');
             
             paramInputs.forEach(input => {
                 const paramName = input.dataset.param;
-                params[paramName] = input.value.trim();
+                const value = input.value.trim();
+                if (value) params[paramName] = value;
             });
             
             const queryString = new URLSearchParams(params).toString();
-            const url = currentEndpoint.path + (queryString ? `?${queryString}` : '');
+            const url = apiConfig.baseUrl + currentEndpoint.path + (queryString ? `?${queryString}` : '');
             
             window.open(url, '_blank');
         }
@@ -1018,27 +1695,49 @@
             apiConfig.categories.forEach(cat => {
                 totalEndpoints += cat.endpoints.length;
             });
-            endpointCountEl.textContent = totalEndpoints;
+            document.getElementById('endpointCount').textContent = totalEndpoints;
         }
 
         // Setup event listeners
         function setupEventListeners() {
             // Search
-            searchInput.addEventListener('input', (e) => {
+            searchInput.addEventListener('input', debounce((e) => {
                 renderAPICategories(e.target.value);
-            });
+            }, 300));
             
             // Test panel
             closePanelBtn.addEventListener('click', closeTestPanel);
             overlay.addEventListener('click', closeTestPanel);
             sendRequestBtn.addEventListener('click', sendRequest);
+            copyUrlBtn.addEventListener('click', copyUrl);
             copyResponseBtn.addEventListener('click', copyResponse);
             openInNewTabBtn.addEventListener('click', openInNewTab);
             
-            // Close panel with Escape key
+            // Close with Escape key
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') closeTestPanel();
             });
+            
+            // Enter key in inputs triggers send
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && testPanel.classList.contains('active') && 
+                    !e.target.classList.contains('param-input')) {
+                    sendRequest();
+                }
+            });
+        }
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
         // Initialize when page loads
