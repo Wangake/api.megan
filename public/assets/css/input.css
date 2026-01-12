@@ -3,35 +3,62 @@
 @tailwind utilities;
 
 @layer base {
+    * {
+        @apply border-gray-800;
+    }
+    
     body {
         @apply antialiased;
+        font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    }
+    
+    ::-webkit-scrollbar {
+        @apply w-2;
+    }
+    
+    ::-webkit-scrollbar-track {
+        @apply bg-gray-900;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        @apply bg-gradient-to-b from-blue-500 to-purple-600 rounded-full;
     }
 }
 
 @layer components {
-    .typewriter {
-        overflow: hidden;
-        border-right: .15em solid #3b82f6;
-        white-space: nowrap;
-        animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-    }
-    
     .glass-card {
-        @apply bg-white/10 backdrop-blur-lg border border-white/20;
+        @apply backdrop-blur-xl bg-gray-900/30 border border-gray-700/50 rounded-2xl p-6 shadow-2xl 
+               hover:shadow-3xl hover:border-gray-600/50 transition-all duration-300;
     }
     
-    .api-card {
-        @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100 
-               hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1;
+    .glass-btn {
+        @apply backdrop-blur-xl bg-gray-800/50 border border-gray-700/50 rounded-xl px-6 py-3 
+               font-semibold hover:bg-gray-700/50 hover:border-gray-600/50 transition-all duration-300;
+    }
+    
+    .gradient-text {
+        @apply bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent;
+    }
+    
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient 8s ease infinite;
+    }
+    
+    .animation-delay-1000 {
+        animation-delay: 1s;
+    }
+    
+    .animation-delay-2000 {
+        animation-delay: 2s;
     }
 }
 
-@keyframes typing {
-    from { width: 0 }
-    to { width: 100% }
-}
-
-@keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: #3b82f6; }
+@keyframes gradient {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
 }
