@@ -3,290 +3,1046 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Megan API - Complete Developer Toolbox</title>
-    <link rel="stylesheet" href="/assets/css/output.css">
-    <script src="https://unpkg.com/@lucide/lucide"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Firebase Analytics Only -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyDBXXhrXOI_bpnJg1J8Qt6c0EarSnPmfeo",
-            authDomain: "api-megan.firebaseapp.com",
-            projectId: "api-megan",
-            storageBucket: "api-megan.firebasestorage.app",
-            messagingSenderId: "53082053296",
-            appId: "1:53082053296:web:7a90b63915b1119d583975",
-            measurementId: "G-Z06BM7YES2"
-        };
+    <title>Megan API - All-in-One API Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        analytics.logEvent('homepage_visited');
-    </script>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+            --border: #d1d5db;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .logo-text .tagline {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 3rem 0;
+            text-align: center;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Search */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* API Grid */
+        .api-grid {
+            padding: 3rem 0;
+        }
+
+        .category {
+            margin-bottom: 3rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .category-count {
+            background: var(--gray-light);
+            color: var(--gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .endpoints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .endpoint-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .endpoint-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .endpoint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .endpoint-name {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: var(--gray-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .endpoint-method {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .endpoint-description {
+            color: var(--gray);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .try-api-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .try-api-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Test Panel (Modal) */
+        .test-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: white;
+            box-shadow: var(--shadow-lg);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .test-panel.active {
+            right: 0;
+        }
+
+        .test-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .test-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .close-btn:hover {
+            background: var(--gray-light);
+        }
+
+        .test-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .endpoint-url {
+            background: var(--dark);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+            word-break: break-all;
+        }
+
+        .param-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .param-field {
+            margin-bottom: 1rem;
+        }
+
+        .param-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .param-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .param-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .test-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .send-btn {
+            flex: 1;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .secondary-btn {
+            padding: 1rem;
+            background: var(--gray-light);
+            color: var(--dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .secondary-btn:hover {
+            background: #d1d5db;
+        }
+
+        .response-section {
+            margin-top: 2rem;
+        }
+
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .response-title {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .copy-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn:hover {
+            background: #0da271;
+        }
+
+        .response-output {
+            background: var(--dark);
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.75rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.4;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer p {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .test-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .stats {
+                gap: 1rem;
+            }
+            
+            .endpoints-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen" 
-      x-data="{
-          init() {
-              lucide.createIcons();
-              this.startCounters();
-          },
-          apiRequests: 0,
-          userCount: 200,
-          serverStatus: 'Online',
-          uptime: '99.9%',
-          userLocation: 'Detecting...',
-          userIp: 'Detecting...',
-          batteryLevel: 75,
-          batteryCharging: false,
-          async startCounters() {
-              // Update API requests every 5 seconds
-              setInterval(() => {
-                  this.apiRequests += Math.floor(Math.random() * 5) + 1;
-              }, 5000);
-              
-              // Update user count every 10 seconds (only increase)
-              setInterval(() => {
-                  this.userCount += 1;
-              }, 10000);
-              
-              // Get user location
-              await this.getLocation();
-              
-              // Get battery status
-              await this.getBattery();
-          },
-          async getLocation() {
-              try {
-                  const response = await fetch('https://ipapi.co/json/');
-                  const data = await response.json();
-                  this.userLocation = `${data.city || 'Unknown'}, ${data.country_name || 'Unknown'}`;
-                  this.userIp = data.ip || '127.0.0.1';
-              } catch {
-                  this.userLocation = 'Global User';
-                  this.userIp = 'IP: Protected';
-              }
-          },
-          async getBattery() {
-              if ('getBattery' in navigator) {
-                  try {
-                      const battery = await navigator.getBattery();
-                      this.batteryLevel = Math.round(battery.level * 100);
-                      this.batteryCharging = battery.charging;
-                      
-                      battery.addEventListener('levelchange', () => {
-                          this.batteryLevel = Math.round(battery.level * 100);
-                      });
-                      
-                      battery.addEventListener('chargingchange', () => {
-                          this.batteryCharging = battery.charging;
-                      });
-                  } catch {}
-              }
-          }
-      }"
-      x-init="init()">
-    
+<body>
     <!-- Header -->
-    <header class="bg-white/90 backdrop-blur-sm border-b sticky top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center animate-pulse">
-                        <i data-lucide="cpu" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold gradient-text">Megan API</h1>
-                        <p class="text-sm text-gray-600">Complete Developer Toolbox</p>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">M</div>
+                    <div class="logo-text">
+                        <h1>MEGAN API</h1>
+                        <div class="tagline">All-in-One API Platform by Wanga</div>
                     </div>
                 </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="/" class="font-medium text-gray-700 hover:text-blue-600 transition">Home</a>
-                    <a href="/dashboard" class="font-medium text-gray-700 hover:text-blue-600 transition">Dashboard</a>
-                    <a href="/api" class="font-medium text-gray-700 hover:text-blue-600 transition">API Docs</a>
-                    <a href="/wanga" class="font-medium text-gray-700 hover:text-blue-600 transition">Contact</a>
-                </nav>
-                <a href="/dashboard" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                    Get Started
-                </a>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number" id="endpointCount">--</div>
+                        <div class="stat-label">Endpoints</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">500/hr</div>
+                        <div class="stat-label">Free Tier</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">2.0.0</div>
+                        <div class="stat-label">Version</div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="container mx-auto px-6 py-16">
-        <div class="text-center max-w-4xl mx-auto">
-            <h2 class="text-5xl md:text-6xl font-bold mb-6">
-                <span class="gradient-text">
-                    Build Faster with
-                </span>
-                <br>
-                <span class="typewriter text-gray-900 block mt-4">Megan API Tools</span>
-            </h2>
-            <p class="text-xl text-gray-600 mb-10">
-                43+ powerful APIs for validation, generation, conversion, and utilities. 
-                Everything you need in one place.
-            </p>
+    <section class="hero">
+        <div class="container">
+            <h2>Powerful APIs in One Place</h2>
+            <p>Access 30+ developer tools for AI, images, downloads, search, and utilities. Simple, fast, and reliable.</p>
             
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                <a href="/dashboard" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <i data-lucide="rocket" class="inline w-5 h-5 mr-2"></i>
-                    Launch Dashboard
-                </a>
-                <a href="/wanga" class="bg-white border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-50 transition">
-                    <i data-lucide="message-circle" class="inline w-5 h-5 mr-2"></i>
-                    Contact Wanga
-                </a>
-            </div>
-        </div>
-
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div class="glass-card">
-                <div class="flex items-center justify-between mb-4">
-                    <i data-lucide="server" class="w-10 h-10 text-blue-600"></i>
-                    <span class="text-2xl font-bold text-green-600" x-text="serverStatus">● Online</span>
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search APIs...">
                 </div>
-                <h3 class="font-bold text-lg mb-2">Server Status</h3>
-                <p class="text-gray-600">Real-time monitoring</p>
-            </div>
-
-            <div class="glass-card">
-                <div class="flex items-center justify-between mb-4">
-                    <i data-lucide="activity" class="w-10 h-10 text-purple-600"></i>
-                    <span class="text-2xl font-bold" x-text="apiRequests + '+'">0+</span>
-                </div>
-                <h3 class="font-bold text-lg mb-2">API Requests</h3>
-                <p class="text-gray-600">Live counter</p>
-            </div>
-
-            <div class="glass-card">
-                <div class="flex items-center justify-between mb-4">
-                    <i data-lucide="zap" class="w-10 h-10 text-yellow-600"></i>
-                    <span class="text-2xl font-bold">500/hr</span>
-                </div>
-                <h3 class="font-bold text-lg mb-2">Rate Limit</h3>
-                <p class="text-gray-600">Free tier capacity</p>
-            </div>
-
-            <div class="glass-card">
-                <div class="flex items-center justify-between mb-4">
-                    <i data-lucide="users" class="w-10 h-10 text-green-600"></i>
-                    <span class="text-2xl font-bold" x-text="userCount + '+'">200+</span>
-                </div>
-                <h3 class="font-bold text-lg mb-2">Active Users</h3>
-                <p class="text-gray-600">Growing community</p>
-            </div>
-        </div>
-
-        <!-- Second Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="glass-card">
-                <i data-lucide="clock" class="w-8 h-8 text-blue-600 mb-4"></i>
-                <h3 class="font-bold text-lg mb-2">Uptime</h3>
-                <p class="text-2xl font-bold text-green-600" x-text="uptime">99.9%</p>
-                <p class="text-gray-600">Since last deploy</p>
-            </div>
-
-            <div class="glass-card">
-                <i data-lucide="map-pin" class="w-8 h-8 text-red-600 mb-4"></i>
-                <h3 class="font-bold text-lg mb-2">Your Location</h3>
-                <p class="text-xl font-semibold" x-text="userLocation">Detecting...</p>
-                <p class="text-gray-600" x-text="'IP: ' + userIp">IP: Detecting...</p>
-            </div>
-
-            <div class="glass-card">
-                <i data-lucide="battery" class="w-8 h-8 text-green-600 mb-4"></i>
-                <h3 class="font-bold text-lg mb-2">Device Battery</h3>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                    <div class="h-2.5 rounded-full transition-all duration-500" 
-                         :class="batteryLevel > 50 ? 'bg-green-600' : batteryLevel > 20 ? 'bg-yellow-600' : 'bg-red-600'"
-                         :style="'width: ' + batteryLevel + '%'"></div>
-                </div>
-                <p class="text-gray-600" x-text="batteryLevel + '% ' + (batteryCharging ? 'charging' : 'remaining')">75% remaining</p>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-gray-900 to-black text-white mt-20">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Kenya Pride -->
-                <div>
-                    <div class="flex items-center mb-4">
-                        <div class="flex space-x-1">
-                            <div class="w-4 h-6 bg-black"></div>
-                            <div class="w-4 h-6 bg-red-600"></div>
-                            <div class="w-4 h-6 bg-green-600"></div>
-                            <div class="w-4 h-6 bg-white border border-gray-300"></div>
-                        </div>
-                        <span class="ml-3 font-bold">Kenya Programming</span>
-                    </div>
-                    <p class="text-gray-400">Made with ❤️ in Kenya</p>
-                    <div class="mt-4">
-                        <span class="bg-gray-800 px-3 py-1 rounded text-sm">MIT License</span>
-                    </div>
-                </div>
-
-                <!-- Connect with Wanga -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Connect with Wanga</h4>
-                    <div class="space-y-3">
-                        <a href="https://facebook.com/" target="_blank" class="flex items-center text-gray-300 hover:text-white transition">
-                            <i data-lucide="facebook" class="w-5 h-5 mr-3"></i>
-                            Facebook Tracker
-                        </a>
-                        <a href="https://instagram.com/" target="_blank" class="flex items-center text-gray-300 hover:text-white transition">
-                            <i data-lucide="instagram" class="w-5 h-5 mr-3"></i>
-                            Instagram Tracker
-                        </a>
-                        <a href="https://twitter.com/" target="_blank" class="flex items-center text-gray-300 hover:text-white transition">
-                            <i data-lucide="twitter" class="w-5 h-5 mr-3"></i>
-                            X (Twitter) Tracker
-                        </a>
-                    </div>
-                </div>
-
-                <!-- WhatsApp -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4">WhatsApp</h4>
-                    <div class="space-y-3">
-                        <a href="https://wa.me/254769502217" target="_blank" class="flex items-center text-gray-300 hover:text-white transition">
-                            <i data-lucide="message-circle" class="w-5 h-5 mr-3 text-green-500"></i>
-                            Direct Message
-                        </a>
-                        <a href="https://chat.whatsapp.com/FtKp4i086Xc0X91t1MTjrU" target="_blank" class="flex items-center text-gray-300 hover:text-white transition">
-                            <i data-lucide="users" class="w-5 h-5 mr-3 text-green-500"></i>
-                            Join Group
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Emails -->
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Contact Emails</h4>
-                    <div class="space-y-2">
-                        <a href="mailto:youngwanga254@gmail.com" class="block text-gray-300 hover:text-white transition">
-                            youngwanga254@gmail.com
-                        </a>
-                        <a href="mailto:wangaelijah2006@gmail.com" class="block text-gray-300 hover:text-white transition">
-                            wangaelijah2006@gmail.com
-                        </a>
-                        <a href="mailto:trackerwanga@gmail.com" class="block text-gray-300 hover:text-white transition">
-                            trackerwanga@gmail.com
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>© 2024-2026 Megan API. All rights reserved.</p>
-                <p class="mt-2">Built with passion by Wanga Elijah</p>
+    <!-- API Grid -->
+    <section class="api-grid">
+        <div class="container">
+            <div id="apiCategories">
+                <!-- Categories will be loaded here by JavaScript -->
+                <div class="loading">Loading APIs...</div>
             </div>
         </div>
+    </section>
+
+    <!-- Test Panel -->
+    <div class="overlay" id="overlay"></div>
+    <div class="test-panel" id="testPanel">
+        <div class="test-header">
+            <div class="test-title">Test API</div>
+            <button class="close-btn" id="closePanel">&times;</button>
+        </div>
+        <div class="test-content">
+            <div class="endpoint-url" id="testEndpointUrl">/api/endpoint</div>
+            
+            <div class="param-section">
+                <div class="section-title">
+                    <i class="fas fa-sliders-h"></i>
+                    Parameters
+                </div>
+                <div id="paramFields">
+                    <!-- Dynamic parameter fields will go here -->
+                </div>
+            </div>
+            
+            <div class="test-actions">
+                <button class="send-btn" id="sendRequest">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Request
+                </button>
+                <button class="secondary-btn" id="openInNewTab">
+                    <i class="fas fa-external-link-alt"></i>
+                    Open in New Tab
+                </button>
+            </div>
+            
+            <div class="response-section">
+                <div class="response-header">
+                    <div class="response-title">API Response</div>
+                    <button class="copy-btn" id="copyResponse">
+                        <i class="fas fa-copy"></i>
+                        Copy
+                    </button>
+                </div>
+                <pre class="response-output" id="responseOutput">Click "Send Request" to see results</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Powered by Megan API | 2024 - 2025 | Contact: contact@megan.co.ke</p>
+        </div>
     </footer>
+
+    <script>
+        // API Configuration - YOU WILL EDIT THIS!
+        const apiConfig = {
+            categories: [
+                {
+                    id: 'ai',
+                    name: 'AI APIs',
+                    icon: 'fas fa-brain',
+                    endpoints: [
+                        {
+                            name: 'Copilot',
+                            path: '/api/copilot',
+                            method: 'GET',
+                            description: 'Fast AI for auto response generation',
+                            parameters: [
+                                {
+                                    name: 'prompt',
+                                    type: 'text',
+                                    required: true,
+                                    placeholder: 'Enter your prompt...',
+                                    default: 'Hello, how are you?'
+                                },
+                                {
+                                    name: 'style',
+                                    type: 'select',
+                                    required: false,
+                                    options: ['casual', 'formal', 'creative'],
+                                    default: 'casual'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'Talk AI',
+                            path: '/api/talk-ai',
+                            method: 'GET',
+                            description: 'A friendly fast responding AI assistant',
+                            parameters: [
+                                {
+                                    name: 'message',
+                                    type: 'text',
+                                    required: true,
+                                    placeholder: 'Type your message...'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'Gemini',
+                            path: '/api/gemini',
+                            method: 'GET',
+                            description: 'Gemini AI for quick replies',
+                            parameters: [
+                                {
+                                    name: 'query',
+                                    type: 'text',
+                                    required: true,
+                                    placeholder: 'Ask Gemini anything...'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'image',
+                    name: 'Image APIs',
+                    icon: 'fas fa-image',
+                    endpoints: [
+                        {
+                            name: 'Flux',
+                            path: '/api/flux',
+                            method: 'GET',
+                            description: 'For generating AI images',
+                            parameters: [
+                                {
+                                    name: 'prompt',
+                                    type: 'text',
+                                    required: true,
+                                    placeholder: 'Describe the image...'
+                                },
+                                {
+                                    name: 'size',
+                                    type: 'select',
+                                    required: false,
+                                    options: ['512x512', '768x768', '1024x1024'],
+                                    default: '512x512'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'Firelogo',
+                            path: '/api/firelogo',
+                            method: 'GET',
+                            description: 'Fire logo maker',
+                            parameters: [
+                                {
+                                    name: 'text',
+                                    type: 'text',
+                                    required: true,
+                                    placeholder: 'Logo text...'
+                                },
+                                {
+                                    name: 'style',
+                                    type: 'select',
+                                    required: false,
+                                    options: ['fire', 'ice', 'neon'],
+                                    default: 'fire'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'download',
+                    name: 'Download APIs',
+                    icon: 'fas fa-download',
+                    endpoints: [
+                        {
+                            name: 'YouTube',
+                            path: '/api/ytdown',
+                            method: 'GET',
+                            description: 'YouTube downloader - choose &format=mp3 or mp4',
+                            parameters: [
+                                {
+                                    name: 'url',
+                                    type: 'url',
+                                    required: true,
+                                    placeholder: 'YouTube URL...'
+                                },
+                                {
+                                    name: 'format',
+                                    type: 'select',
+                                    required: false,
+                                    options: ['mp3', 'mp4'],
+                                    default: 'mp4'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'Spotify',
+                            path: '/api/spotify',
+                            method: 'GET',
+                            description: 'Spotify music downloader',
+                            parameters: [
+                                {
+                                    name: 'url',
+                                    type: 'url',
+                                    required: true,
+                                    placeholder: 'Spotify track URL...'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Current state
+        let currentEndpoint = null;
+        let isLoading = false;
+
+        // DOM Elements
+        const apiCategoriesEl = document.getElementById('apiCategories');
+        const searchInput = document.getElementById('searchInput');
+        const testPanel = document.getElementById('testPanel');
+        const overlay = document.getElementById('overlay');
+        const closePanelBtn = document.getElementById('closePanel');
+        const testEndpointUrlEl = document.getElementById('testEndpointUrl');
+        const paramFieldsEl = document.getElementById('paramFields');
+        const sendRequestBtn = document.getElementById('sendRequest');
+        const openInNewTabBtn = document.getElementById('openInNewTab');
+        const copyResponseBtn = document.getElementById('copyResponse');
+        const responseOutputEl = document.getElementById('responseOutput');
+        const endpointCountEl = document.getElementById('endpointCount');
+
+        // Initialize
+        function init() {
+            renderAPICategories();
+            setupEventListeners();
+            updateStats();
+        }
+
+        // Render all API categories and endpoints
+        function renderAPICategories(filter = '') {
+            let totalEndpoints = 0;
+            let html = '';
+            
+            apiConfig.categories.forEach(category => {
+                // Filter endpoints within category
+                const filteredEndpoints = category.endpoints.filter(endpoint => 
+                    filter === '' || 
+                    endpoint.name.toLowerCase().includes(filter.toLowerCase()) ||
+                    endpoint.description.toLowerCase().includes(filter.toLowerCase()) ||
+                    endpoint.path.toLowerCase().includes(filter.toLowerCase())
+                );
+                
+                if (filteredEndpoints.length === 0) return;
+                
+                totalEndpoints += filteredEndpoints.length;
+                
+                html += `
+                    <div class="category">
+                        <div class="category-header">
+                            <div class="category-icon">
+                                <i class="${category.icon}"></i>
+                            </div>
+                            <div class="category-title">${category.name}</div>
+                            <div class="category-count">${filteredEndpoints.length}</div>
+                        </div>
+                        <div class="endpoints-grid">
+                `;
+                
+                filteredEndpoints.forEach(endpoint => {
+                    html += `
+                        <div class="endpoint-card">
+                            <div class="endpoint-header">
+                                <div class="endpoint-name">${endpoint.path}</div>
+                                <div class="endpoint-method">${endpoint.method}</div>
+                            </div>
+                            <div class="endpoint-description">${endpoint.description}</div>
+                            <button class="try-api-btn" 
+                                    data-endpoint='${JSON.stringify(endpoint)}'>
+                                <i class="fas fa-flask"></i>
+                                Try API
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            apiCategoriesEl.innerHTML = html || '<div class="no-results">No APIs found matching your search.</div>';
+            endpointCountEl.textContent = totalEndpoints;
+            
+            // Re-attach event listeners to new buttons
+            document.querySelectorAll('.try-api-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const endpoint = JSON.parse(e.target.closest('.try-api-btn').dataset.endpoint);
+                    openTestPanel(endpoint);
+                });
+            });
+        }
+
+        // Open test panel with selected endpoint
+        function openTestPanel(endpoint) {
+            currentEndpoint = endpoint;
+            
+            // Update panel title and URL
+            testEndpointUrlEl.textContent = endpoint.path;
+            
+            // Generate parameter fields
+            let paramFieldsHTML = '';
+            if (endpoint.parameters && endpoint.parameters.length > 0) {
+                endpoint.parameters.forEach((param, index) => {
+                    if (param.type === 'select') {
+                        paramFieldsHTML += `
+                            <div class="param-field">
+                                <label class="param-label">${param.name} ${param.required ? '*' : ''}</label>
+                                <select class="param-input" data-param="${param.name}">
+                                    ${param.options.map(opt => 
+                                        `<option value="${opt}" ${opt === param.default ? 'selected' : ''}>${opt}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                        `;
+                    } else {
+                        paramFieldsHTML += `
+                            <div class="param-field">
+                                <label class="param-label">${param.name} ${param.required ? '*' : ''}</label>
+                                <input type="${param.type}" 
+                                       class="param-input" 
+                                       data-param="${param.name}"
+                                       placeholder="${param.placeholder || param.name}"
+                                       value="${param.default || ''}">
+                            </div>
+                        `;
+                    }
+                });
+            } else {
+                paramFieldsHTML = '<p>No parameters required for this endpoint.</p>';
+            }
+            
+            paramFieldsEl.innerHTML = paramFieldsHTML;
+            responseOutputEl.textContent = 'Click "Send Request" to see results';
+            
+            // Show panel
+            testPanel.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close test panel
+        function closeTestPanel() {
+            testPanel.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            currentEndpoint = null;
+        }
+
+        // Send API request
+        async function sendRequest() {
+            if (!currentEndpoint || isLoading) return;
+            
+            // Get parameter values
+            const params = {};
+            const paramInputs = paramFieldsEl.querySelectorAll('.param-input');
+            
+            paramInputs.forEach(input => {
+                const paramName = input.dataset.param;
+                params[paramName] = input.value.trim();
+            });
+            
+            // Build URL
+            const queryString = new URLSearchParams(params).toString();
+            const url = currentEndpoint.path + (queryString ? `?${queryString}` : '');
+            
+            // Update UI
+            sendRequestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            sendRequestBtn.disabled = true;
+            responseOutputEl.textContent = 'Loading...';
+            
+            try {
+                // Make request
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Display response
+                responseOutputEl.textContent = JSON.stringify(data, null, 2);
+                
+                // Syntax highlighting (simple version)
+                responseOutputEl.innerHTML = highlightJSON(JSON.stringify(data, null, 2));
+                
+            } catch (error) {
+                responseOutputEl.textContent = `Error: ${error.message}`;
+            } finally {
+                sendRequestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Request';
+                sendRequestBtn.disabled = false;
+            }
+        }
+
+        // Simple JSON syntax highlighting
+        function highlightJSON(json) {
+            return json
+                .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?)/g, '<span style="color: #61afef;">$1</span>')
+                .replace(/\b(true|false|null)\b/g, '<span style="color: #e06c75;">$1</span>')
+                .replace(/\b(\d+)\b/g, '<span style="color: #d19a66;">$1</span>');
+        }
+
+        // Copy response to clipboard
+        function copyResponse() {
+            const text = responseOutputEl.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copyResponseBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyResponseBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+
+        // Open endpoint in new tab
+        function openInNewTab() {
+            if (!currentEndpoint) return;
+            
+            const params = {};
+            const paramInputs = paramFieldsEl.querySelectorAll('.param-input');
+            
+            paramInputs.forEach(input => {
+                const paramName = input.dataset.param;
+                params[paramName] = input.value.trim();
+            });
+            
+            const queryString = new URLSearchParams(params).toString();
+            const url = currentEndpoint.path + (queryString ? `?${queryString}` : '');
+            
+            window.open(url, '_blank');
+        }
+
+        // Update statistics
+        function updateStats() {
+            let totalEndpoints = 0;
+            apiConfig.categories.forEach(cat => {
+                totalEndpoints += cat.endpoints.length;
+            });
+            endpointCountEl.textContent = totalEndpoints;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search
+            searchInput.addEventListener('input', (e) => {
+                renderAPICategories(e.target.value);
+            });
+            
+            // Test panel
+            closePanelBtn.addEventListener('click', closeTestPanel);
+            overlay.addEventListener('click', closeTestPanel);
+            sendRequestBtn.addEventListener('click', sendRequest);
+            copyResponseBtn.addEventListener('click', copyResponse);
+            openInNewTabBtn.addEventListener('click', openInNewTab);
+            
+            // Close panel with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeTestPanel();
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
