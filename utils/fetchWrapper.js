@@ -1,5 +1,4 @@
-// Wrapper for EliteProTech API calls
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+// Wrapper for EliteProTech API calls (Node 18+ native fetch)
 
 const ELITE_BASE = "https://eliteprotech-apis.zone.id";
 
@@ -12,10 +11,15 @@ async function fetchFromElite(endpoint, params = {}) {
 
         const response = await fetch(url, {
             headers: {
-                'User-Agent': 'Mozilla/5.0',
-                'Accept': 'application/json'
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json",
+                "Accept-Language": "en-US,en;q=0.9"
             }
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
         return await response.json();
     } catch (error) {
