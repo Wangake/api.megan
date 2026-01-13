@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+app.use(express.static('public')); // Serve static files from public directory
 
 // Load all API handlers dynamically
 const apiHandlers = {};
@@ -89,46 +90,40 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Dashboard
+// Serve dashboard from public/index.html
 app.get('/', (req, res) => {
-    const endpoints = Object.keys(apiHandlers);
-
-    const html = `<!DOCTYPE html>
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        // Fallback to simple HTML if index.html doesn't exist
+        const html = `<!DOCTYPE html>
 <html>
 <head>
     <title>Megan API</title>
     <style>
         body { font-family: Arial; padding: 20px; max-width: 1000px; margin: auto; background: #0f172a; color: white; }
-        .endpoint { background: #1e293b; color: white; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #334155; }
-        code { background: #0f172a; color: #60a5fa; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
         .logo { color: #3b82f6; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; }
-        .test-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; }
-        .test-btn:hover { background: #2563eb; }
+        .message { background: #1e293b; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        a { color: #60a5fa; }
     </style>
 </head>
 <body>
     <div class="logo">MEGAN API</div>
     <p>Complete Developer Platform • By Wanga</p>
-
-    <div class="grid">
-        ${endpoints.map(ep => `
-        <div class="endpoint">
-            <h3>${ep.split('/').pop()}</h3>
-            <code>GET ${ep}</code><br>
-            <button class="test-btn" onclick="window.open('${ep}?test=true', '_blank')">
-                Test Endpoint
-            </button>
-        </div>
-        `).join('')}
+    
+    <div class="message">
+        <p>The main dashboard is located at <code>public/index.html</code></p>
+        <p>Please make sure the file exists in the public directory.</p>
     </div>
-
-    <p><a href="/api" style="color: #60a5fa;">View all endpoints as JSON</a></p>
-    <p><a href="/health" style="color: #60a5fa;">Health Check</a></p>
+    
+    <p><a href="/api">View all endpoints as JSON</a></p>
+    <p><a href="/health">Health Check</a></p>
 </body>
 </html>`;
-
-    res.send(html);
+        res.send(html);
+    }
 });
 
 // Initialize
@@ -140,4 +135,5 @@ app.listen(PORT, () => {
     console.log(`\n✅ Megan API running on port ${PORT}`);
     console.log(`📌 Dashboard: http://localhost:${PORT}`);
     console.log(`📚 Loaded ${Object.keys(apiHandlers).length} API endpoints`);
+    console.log(`📁 Serving static files from: ${path.join(__dirname, 'public')}`);
 });
