@@ -1,11 +1,11 @@
 // Main Application Script
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Megan API Frontend Initializing...');
-    
+
     // Application State
     let currentEndpoint = null;
     let currentResponse = null;
-    let apiData = apiConfig; // Use the config from api-config.js
+    let apiData = window.apiConfig; // Use the config from api-config.js
 
     // DOM Elements
     const apiCategoriesEl = document.getElementById('apiCategories');
@@ -30,12 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
         renderAPICategories();
         setupEventListeners();
         updateStats();
-        
-        // Check if API config is loaded
-        if (window.apiConfig) {
-            console.log('✅ API Config found in window object');
-            apiData = window.apiConfig;
-        }
     }
 
     // Render all API categories
@@ -57,22 +51,22 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             return;
         }
-        
+
         let totalEndpoints = 0;
         let html = '';
-        
+
         apiData.categories.forEach(category => {
             const filteredEndpoints = category.endpoints.filter(endpoint => 
                 filter === '' || 
                 endpoint.name.toLowerCase().includes(filter.toLowerCase()) ||
-                endpoint.description.toLowerCase().includes(filter.toLowerCase()) ||
+                (endpoint.description && endpoint.description.toLowerCase().includes(filter.toLowerCase())) ||
                 endpoint.path.toLowerCase().includes(filter.toLowerCase())
             );
-            
+
             if (filteredEndpoints.length === 0) return;
-            
+
             totalEndpoints += filteredEndpoints.length;
-            
+
             html += `
                 <div class="category" data-category="${category.id}">
                     <div class="category-header">
@@ -84,20 +78,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="endpoints-grid">
             `;
-            
+
             filteredEndpoints.forEach(endpoint => {
                 const paramsText = endpoint.parameters && endpoint.parameters.length > 0
                     ? endpoint.parameters.map(p => `${p.name}: ${p.type}`).join(', ')
                     : 'No parameters';
-                
+
                 html += `
                     <div class="endpoint-card" data-endpoint="${endpoint.path}">
                         <div class="endpoint-header">
-                            <div class="endpoint-name">${endpoint.path}</div>
+                            <div class="endpoint-name">${endpoint.name}</div>
                             <div class="endpoint-method">${endpoint.method}</div>
                         </div>
                         <div class="endpoint-description">
-                            ${endpoint.description}
+                            ${endpoint.description || 'API endpoint for ' + endpoint.name}
                         </div>
                         <div class="endpoint-params">
                             <div class="params-label">
@@ -114,13 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
             });
-            
+
             html += `
                     </div>
                 </div>
             `;
         });
-        
+
         if (html === '') {
             html = `
                 <div class="category">
@@ -136,10 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-        
+
         apiCategoriesEl.innerHTML = html;
         endpointCountEl.textContent = totalEndpoints;
-        
+
         // Attach event listeners to new buttons
         document.querySelectorAll('.try-api-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -152,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-        
+
         console.log(`✅ Rendered ${totalEndpoints} endpoints`);
     }
 
@@ -161,22 +155,22 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Opening test panel for:', endpoint.name);
         currentEndpoint = endpoint;
         currentResponse = null;
-        
+
         // Update panel
         panelTitleEl.textContent = endpoint.name;
         testEndpointUrlEl.textContent = endpoint.path;
-        
+
         // Generate parameter fields
         let paramsHTML = '';
         if (endpoint.parameters && endpoint.parameters.length > 0) {
             endpoint.parameters.forEach(param => {
                 let inputHTML = '';
-                
+
                 if (param.type === 'select') {
                     const options = param.options.map(opt => 
                         `<option value="${opt}" ${opt === param.default ? 'selected' : ''}>${opt}</option>`
                     ).join('');
-                    
+
                     inputHTML = `
                         <select class="param-input select" data-param="${param.name}">
                             ${options}
@@ -188,23 +182,23 @@ document.addEventListener('DOMContentLoaded', function() {
                                      param.type === 'url' ? 'url' : 
                                      param.type === 'tel' ? 'tel' : 
                                      param.type === 'number' ? 'number' : 'text';
-                    
+
                     inputHTML = `
                         <input type="${inputType}" 
                                class="param-input" 
                                data-param="${param.name}"
-                               placeholder="${param.example || param.description}"
+                               placeholder="${param.example || param.description || ''}"
                                value="${param.default || ''}">
                     `;
                 }
-                
+
                 paramsHTML += `
                     <div class="param-field">
                         <div class="param-header">
                             <div class="param-name">${param.name}</div>
                             ${param.required ? '<div class="param-required">Required</div>' : ''}
                         </div>
-                        <div class="param-description">${param.description}</div>
+                        <div class="param-description">${param.description || 'Parameter'}</div>
                         <div class="param-input-container">
                             ${inputHTML}
                         </div>
@@ -221,9 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-        
+
         paramGridEl.innerHTML = paramsHTML;
-        
+
         // Reset response area
         statusBadgeEl.textContent = 'Ready';
         statusBadgeEl.className = 'status-badge status-success';
@@ -231,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
         copyResponseBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
         sendRequestBtn.disabled = false;
         sendRequestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Request';
-        
+
         // Show panel
         testPanel.classList.add('active');
         overlay.classList.add('active');
@@ -253,21 +247,28 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('No endpoint selected');
             return;
         }
-        
+
         console.log('Sending request for:', currentEndpoint.name);
-        
+
         // Get parameter values
         const params = {};
         const paramInputs = paramGridEl.querySelectorAll('.param-input');
         let hasErrors = false;
-        
+
         paramInputs.forEach(input => {
             const paramName = input.dataset.param;
-            const value = input.value.trim();
-            
+            let value = input.value;
+
+            // For select elements, use the selected value
+            if (input.tagName === 'SELECT') {
+                value = input.options[input.selectedIndex].value;
+            } else {
+                value = value.trim();
+            }
+
             // Find parameter definition
             const paramDef = currentEndpoint.parameters.find(p => p.name === paramName);
-            
+
             if (paramDef && paramDef.required && !value) {
                 input.style.borderColor = 'var(--error)';
                 input.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.2)';
@@ -278,31 +279,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (value) params[paramName] = value;
             }
         });
-        
+
         if (hasErrors) {
             statusBadgeEl.textContent = 'Error';
             statusBadgeEl.className = 'status-badge status-error';
             responseOutputEl.innerHTML = 'Please fill in all required parameters.';
             return;
         }
-        
+
         // Build URL
         const queryString = new URLSearchParams(params).toString();
         const fullUrl = currentEndpoint.path + (queryString ? `?${queryString}` : '');
         const absoluteUrl = apiData.baseUrl + fullUrl;
-        
+
         testEndpointUrlEl.textContent = fullUrl;
-        
+
         // Update UI for loading
         sendRequestBtn.disabled = true;
         sendRequestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         statusBadgeEl.textContent = 'Loading';
+        statusBadgeEl.className = 'status-badge status-success';
         responseOutputEl.innerHTML = 'Making request...';
-        
+
         try {
             const startTime = Date.now();
             console.log('Making request to:', absoluteUrl);
-            
+
             // Make API request
             const response = await fetch(absoluteUrl, {
                 method: currentEndpoint.method,
@@ -311,10 +313,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             const responseTime = Date.now() - startTime;
             console.log('Response received in', responseTime, 'ms');
-            
+
             // Try to parse JSON
             let data;
             try {
@@ -330,10 +332,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 console.log('Non-JSON response:', text.substring(0, 200));
             }
-            
+
             // Update UI
             currentResponse = data;
-            
+
             if (response.ok && data.success !== false) {
                 statusBadgeEl.textContent = `Success • ${responseTime}ms`;
                 statusBadgeEl.className = 'status-badge status-success';
@@ -341,10 +343,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 statusBadgeEl.textContent = `Error • ${responseTime}ms`;
                 statusBadgeEl.className = 'status-badge status-error';
             }
-            
+
             // Format and display response
             responseOutputEl.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
-            
+
         } catch (error) {
             console.error('Request failed:', error);
             statusBadgeEl.textContent = 'Failed';
@@ -359,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // JSON syntax highlighting
     function syntaxHighlight(json) {
         if (!json) return '';
-        
+
         json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
             let cls = 'number';
@@ -386,6 +388,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 copyUrlBtn.innerHTML = '<i class="fas fa-copy"></i> Copy URL';
             }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy URL:', err);
         });
     }
 
@@ -395,39 +399,48 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('No response to copy');
             return;
         }
-        
+
         const text = JSON.stringify(currentResponse, null, 2);
         navigator.clipboard.writeText(text).then(() => {
             copyResponseBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
             setTimeout(() => {
                 copyResponseBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
             }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy response:', err);
         });
     }
 
     // Open endpoint in new tab
     function openInNewTab() {
         if (!currentEndpoint) return;
-        
+
         const params = {};
         const paramInputs = paramGridEl.querySelectorAll('.param-input');
-        
+
         paramInputs.forEach(input => {
             const paramName = input.dataset.param;
-            const value = input.value.trim();
+            let value = input.value;
+            
+            if (input.tagName === 'SELECT') {
+                value = input.options[input.selectedIndex].value;
+            } else {
+                value = value.trim();
+            }
+            
             if (value) params[paramName] = value;
         });
-        
+
         const queryString = new URLSearchParams(params).toString();
         const url = apiData.baseUrl + currentEndpoint.path + (queryString ? `?${queryString}` : '');
-        
+
         window.open(url, '_blank');
     }
 
     // Update statistics
     function updateStats() {
         if (!apiData || !apiData.categories) return;
-        
+
         let totalEndpoints = 0;
         apiData.categories.forEach(cat => {
             totalEndpoints += cat.endpoints.length;
@@ -445,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderAPICategories(e.target.value);
             }, 300);
         });
-        
+
         // Test panel
         closePanelBtn.addEventListener('click', closeTestPanel);
         overlay.addEventListener('click', closeTestPanel);
@@ -453,20 +466,21 @@ document.addEventListener('DOMContentLoaded', function() {
         copyUrlBtn.addEventListener('click', copyUrl);
         copyResponseBtn.addEventListener('click', copyResponse);
         openInNewTabBtn.addEventListener('click', openInNewTab);
-        
+
         // Close with Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeTestPanel();
         });
-        
+
         // Enter key in panel triggers send (but not in inputs)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && testPanel.classList.contains('active') && 
-                !e.target.classList.contains('param-input')) {
+                !e.target.classList.contains('param-input') &&
+                !e.target.tagName === 'SELECT') {
                 sendRequest();
             }
         });
-        
+
         console.log('✅ Event listeners setup complete');
     }
 
