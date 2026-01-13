@@ -1,42 +1,53 @@
+/**
+ * Megan API Server - Professional Version
+ * 100 requests/hour free tier
+ * Clean responses
+ * Production ready
+ */
+
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
-const { createResponse } = require('./utils/response');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
 
+const config = require('./config/config');
+const { createResponse, errorResponse } = require('./utils/response');
+const fetchWrapper = require('./utils/fetchWrapper');
+
+// Initialize Express
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = config.port;
 
 // ======================
 // RATE LIMITING CONFIG
 // ======================
 
-// Free tier: 500 requests per hour
+// Free tier: 100 requests per hour (not 500)
 const freeLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 500,
-    message: {
+    windowMs: config.rateLimit.free.windowMs,
+    max: config.rateLimit.free.max,
+    message: createResponse({
         success: false,
         error: 'Rate limit exceeded',
-        message: 'Free tier limit: 500 requests per hour',
+        message: `Free tier limit: ${config.rateLimit.free.max} requests per hour`,
         upgrade_url: 'https://api.megan.co.ke/upgrade'
-    },
+    }),
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
+    skip: (req) => req.path.includes('/health') || req.path.includes('/api/wanga~')
 });
 
-// Admin/Whitelist tier (unlimited)
+// Admin tier: 10,000 requests per hour (effectively unlimited)
 const adminLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,
-    max: 1000000, // Basically unlimited
-    message: {
+    windowMs: config.rateLimit.admin.windowMs,
+    max: config.rateLimit.admin.max,
+    message: createResponse({
         success: false,
         error: 'Admin rate limit exceeded'
-    },
-    skip: (req) => {
-        // Check for admin/whitelist tokens
-        return req.path.includes('/api/wanga~') || req.path.includes('/api/admin/');
-    }
+    })
 });
 
 // ======================
@@ -44,20 +55,45 @@ const adminLimiter = rateLimit({
 // ======================
 
 app.use(express.json({ limit: '10mb' }));
-app.use(require('cors')());
-app.use(require('helmet')());
-app.use(require('morgan')('dev'));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Security middleware
+if (config.security.helmetEnabled) {
+    app.use(helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+                scriptSrc: ["'self'", "https://cdnjs.cloudflare.com"],
+                imgSrc: ["'self'", "data:", "https://files.catbox.moe"]
+            }
+        }
+    }));
+}
+
+// CORS
+app.use(cors({
+    origin: config.security.corsOrigin,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Logging
+if (config.nodeEnv === 'development') {
+    app.use(morgan('dev'));
+} else {
+    app.use(morgan('combined', {
+        stream: fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' })
+    }));
+}
 
 // ======================
-// STATIC FILES (Frontend)
+// STATIC FILES
 // ======================
 
 const publicDir = path.join(__dirname, 'public');
-
-// Serve static files with clean URLs
 app.use(express.static(publicDir, {
     maxAge: '1d',
-    extensions: ['html'], // Auto-add .html extension
     setHeaders: (res, filePath) => {
         if (filePath.endsWith('.html')) {
             res.set('Cache-Control', 'no-cache');
@@ -65,144 +101,76 @@ app.use(express.static(publicDir, {
     }
 }));
 
-// Serve index.html for root paths
-const serveIndex = (req, res, folder) => {
-    const indexPath = path.join(publicDir, folder, 'index.html');
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        res.status(404).send('Page not found');
-    }
-};
-
-// Route handlers for clean URLs
-app.get('/', (req, res) => serveIndex(req, res, ''));
-app.get('/dashboard', (req, res) => serveIndex(req, res, 'dashboard'));
-app.get('/wanga', (req, res) => serveIndex(req, res, 'wanga'));
-app.get('/admin', (req, res) => serveIndex(req, res, 'admin'));
-app.get('/api-test', (req, res) => serveIndex(req, res, 'api-test'));
-app.get('/upgrade', (req, res) => serveIndex(req, res, 'upgrade'));
-
-// ======================
-// ADMIN/WHITELIST ROUTING
-// ======================
-
-// Whitelist pattern: /api/wanga~{token}/{category}/{endpoint}
-app.get('/api/wanga~:token/*', adminLimiter, async (req, res) => {
-    const startTime = Date.now();
-    const token = req.params.token;
-    const restOfPath = req.params[0]; // The part after the token
-    
-    // Extract endpoint from path
-    const pathParts = restOfPath.split('/');
-    const category = pathParts[0];
-    const endpoint = pathParts[1];
-    
-    // Validate admin token (in production, check against database)
-    const isValidToken = await validateAdminToken(token);
-    
-    if (!isValidToken) {
-        const response = createResponse({
-            success: false,
-            error: 'Invalid admin token',
-            code: 'INVALID_TOKEN'
-        }, req.path, req.query, startTime);
-        return res.status(401).json(response);
-    }
-    
-    try {
-        // Try to load the handler
-        let handler;
-        try {
-            handler = require(`./api/${category}/${endpoint}`);
-        } catch {
-            // Try with .js extension
-            handler = require(`./api/${category}/${endpoint}.js`);
-        }
-        
-        const result = await handler(req, res, startTime);
-        const response = createResponse({
-            ...result,
-            admin_access: true,
-            token_used: token,
-            rate_limit: 'unlimited'
-        }, `/api/${category}/${endpoint}`, req.query, startTime);
-        
-        res.json(response);
-    } catch (error) {
-        const response = createResponse({
-            success: false,
-            error: `Endpoint not found: ${category}/${endpoint}`,
-            admin_access: true
-        }, req.path, req.query, startTime);
-        res.status(404).json(response);
-    }
+// Serve index.html for root
+app.get('/', (req, res) => {
+    res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-async function validateAdminToken(token) {
-    // In production, check against database
-    // For now, accept any token that matches pattern
-    return /^[a-zA-Z0-9]{8,}$/.test(token);
-}
-
 // ======================
-// STANDARD API ROUTING
+// API HANDLER LOADING
 // ======================
 
 const apiHandlers = {};
+const apiCategories = {};
 
 function loadAPIHandlers() {
     const apiDir = path.join(__dirname, 'api');
     
-    function scanDirectory(dir, prefix = '') {
-        if (!fs.existsSync(dir)) return;
-        
-        const items = fs.readdirSync(dir, { withFileTypes: true });
-        
-        items.forEach(item => {
-            const fullPath = path.join(dir, item.name);
+    if (!fs.existsSync(apiDir)) {
+        console.warn('⚠️  No API directory found');
+        return;
+    }
+
+    // Scan for category directories
+    const categories = fs.readdirSync(apiDir, { withFileTypes: true })
+        .filter(dirent => dirent.isDirectory())
+        .map(dirent => dirent.name);
+
+    categories.forEach(category => {
+        const categoryDir = path.join(apiDir, category);
+        const endpoints = fs.readdirSync(categoryDir)
+            .filter(file => file.endsWith('.js'))
+            .map(file => path.basename(file, '.js'));
+
+        apiCategories[category] = endpoints;
+
+        endpoints.forEach(endpoint => {
+            const endpointPath = `/api/${category}/${endpoint}`;
+            const handlerPath = path.join(categoryDir, `${endpoint}.js`);
             
-            if (item.isDirectory()) {
-                scanDirectory(fullPath, `${prefix}${item.name}/`);
-            } else if (item.name.endsWith('.js')) {
-                const endpointName = path.basename(item.name, '.js');
-                const endpointPath = `/api/${prefix}${endpointName}`;
-                
-                try {
-                    const handler = require(fullPath);
-                    apiHandlers[endpointPath] = handler;
-                    console.log(`✅ Loaded: ${endpointPath}`);
-                } catch (error) {
-                    console.error(`❌ Failed: ${endpointPath}`, error.message);
-                }
+            try {
+                const handler = require(handlerPath);
+                apiHandlers[endpointPath] = handler;
+                console.log(`✅ Loaded: ${endpointPath}`);
+            } catch (error) {
+                console.error(`❌ Failed to load ${endpointPath}:`, error.message);
             }
         });
-    }
-    
-    scanDirectory(apiDir);
+    });
 }
 
 function setupRoutes() {
     Object.keys(apiHandlers).forEach(endpoint => {
         app.get(endpoint, freeLimiter, async (req, res) => {
             const startTime = Date.now();
-            
+
             try {
                 const result = await apiHandlers[endpoint](req, res, startTime);
                 const response = createResponse({
                     ...result,
                     rate_limit: {
                         tier: 'free',
-                        limit: 500,
-                        remaining: req.rateLimit?.remaining || 500
+                        limit: config.rateLimit.free.max,
+                        remaining: req.rateLimit?.remaining || config.rateLimit.free.max
                     }
                 }, endpoint, req.query, startTime);
-                
+
                 res.json(response);
             } catch (error) {
+                console.error(`Error in ${endpoint}:`, error);
                 const response = createResponse({
                     success: false,
-                    error: `Internal error: ${error.message}`
+                    error: `Internal server error: ${error.message}`
                 }, endpoint, req.query, startTime);
                 res.status(500).json(response);
             }
@@ -211,67 +179,158 @@ function setupRoutes() {
 }
 
 // ======================
-// API INFO & HEALTH
+// ADMIN/WHITELIST ROUTING
+// ======================
+
+app.get('/api/wanga~:token/*', adminLimiter, async (req, res) => {
+    const startTime = Date.now();
+    const token = req.params.token;
+    const restOfPath = req.params[0];
+
+    // Validate admin token
+    if (!config.admin.tokens.includes(token)) {
+        const response = createResponse({
+            success: false,
+            error: 'Invalid admin token',
+            code: 'INVALID_TOKEN'
+        }, req.path, req.query, startTime);
+        return res.status(401).json(response);
+    }
+
+    const pathParts = restOfPath.split('/');
+    const category = pathParts[0];
+    const endpoint = pathParts[1];
+
+    const endpointPath = `/api/${category}/${endpoint}`;
+    const handler = apiHandlers[endpointPath];
+
+    if (!handler) {
+        const response = createResponse({
+            success: false,
+            error: `Endpoint not found: ${category}/${endpoint}`,
+            admin_access: true
+        }, req.path, req.query, startTime);
+        return res.status(404).json(response);
+    }
+
+    try {
+        const result = await handler(req, res, startTime);
+        const response = createResponse({
+            ...result,
+            admin_access: true,
+            token_used: token,
+            rate_limit: {
+                tier: 'admin',
+                limit: config.rateLimit.admin.max,
+                remaining: req.rateLimit?.remaining || config.rateLimit.admin.max
+            }
+        }, endpointPath, req.query, startTime);
+
+        res.json(response);
+    } catch (error) {
+        const response = createResponse({
+            success: false,
+            error: `Internal error: ${error.message}`,
+            admin_access: true
+        }, req.path, req.query, startTime);
+        res.status(500).json(response);
+    }
+});
+
+// ======================
+// API INFO ENDPOINT
 // ======================
 
 app.get('/api', freeLimiter, (req, res) => {
+    const startTime = Date.now();
+    
     const endpoints = Object.keys(apiHandlers).map(endpoint => ({
         endpoint: endpoint,
-        category: endpoint.split('/')[2] || 'tools',
+        category: endpoint.split('/')[2],
         method: 'GET',
         admin_access: `/api/wanga~{token}${endpoint}`
     }));
-    
+
     const categories = {};
     endpoints.forEach(ep => {
         if (!categories[ep.category]) categories[ep.category] = [];
-        categories[ep.category].push(ep);
+        categories[ep.category].push(ep.endpoint);
     });
-    
-    res.json(createResponse({
-        success: true,
-        name: 'Megan API',
-        version: '2.0.0',
+
+    const response = createResponse({
+        name: config.api.name,
+        version: config.api.version,
+        author: config.api.author,
         endpoints_count: endpoints.length,
-        categories: categories,
+        categories: Object.keys(categories).reduce((acc, category) => {
+            acc[category] = categories[category].length;
+            return acc;
+        }, {}),
         rate_limits: {
-            free: '500 requests/hour',
-            admin: 'Unlimited (with token)',
-            upgrade: 'https://api.megan.onrender.com/upgrade'
-        }
-    }, '/api', req.query, Date.now()));
+            free: `${config.rateLimit.free.max} requests/hour`,
+            admin: 'Unlimited (with token)'
+        },
+        documentation: config.api.documentation,
+        contact: config.api.contact
+    }, '/api', req.query, startTime);
+
+    res.json(response);
 });
+
+// ======================
+// HEALTH CHECK
+// ======================
 
 app.get('/health', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        version: '2.0.0',
-        node: process.version
+        version: config.api.version,
+        node: process.version,
+        memory: process.memoryUsage()
     });
 });
 
 // ======================
-// ERROR HANDLING
+// 404 HANDLING
 // ======================
 
 app.get('/api/*', (req, res) => {
+    const startTime = Date.now();
     const response = createResponse({
         success: false,
         error: 'API endpoint not found',
-        available: Object.keys(apiHandlers)
-    }, req.path, req.query, Date.now());
+        hint: 'Visit /api for available endpoints'
+    }, req.path, req.query, startTime);
     res.status(404).json(response);
 });
 
-// 404 for all other routes
-app.use((req, res) => {
+app.use('*', (req, res) => {
     if (req.accepts('html')) {
-        res.status(404).sendFile(path.join(publicDir, '404.html'));
+        res.sendFile(path.join(publicDir, 'index.html'));
     } else {
-        res.status(404).json({ error: 'Not found' });
+        const response = createResponse({
+            success: false,
+            error: 'Route not found'
+        }, req.path, req.query, Date.now());
+        res.status(404).json(response);
     }
+});
+
+// ======================
+// ERROR HANDLING MIDDLEWARE
+// ======================
+
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err);
+    
+    const response = createResponse({
+        success: false,
+        error: 'Internal server error'
+    }, req.path, req.query, Date.now());
+    
+    res.status(500).json(response);
 });
 
 // ======================
@@ -280,9 +339,23 @@ app.use((req, res) => {
 
 // Create required directories
 const requiredDirs = [
-    'public', 'public/dashboard', 'public/wanga', 'public/admin', 
-    'public/api-test', 'public/assets/css', 'public/assets/js',
-    'public/components', 'public/assets/images'
+    'api',
+    'api/tools',
+    'api/validator',
+    'api/generators',
+    'api/web',
+    'api/time',
+    'api/ai',
+    'api/image',
+    'api/youtube',
+    'api/spotify',
+    'api/social',
+    'public',
+    'public/assets/css',
+    'public/assets/js',
+    'public/assets/images',
+    'logs',
+    'config'
 ];
 
 requiredDirs.forEach(dir => {
@@ -297,14 +370,40 @@ requiredDirs.forEach(dir => {
 loadAPIHandlers();
 setupRoutes();
 
+// Set global endpoints count
+global.apiEndpointsCount = Object.keys(apiHandlers).length;
+
 // Start server
-app.listen(PORT, () => {
-    console.log(`\n🚀 Megan API running on port ${PORT}`);
-    console.log(`🌐 Frontend: http://localhost:${PORT}`);
-    console.log(`📊 Dashboard: http://localhost:${PORT}/dashboard`);
-    console.log(`👑 Admin: http://localhost:${PORT}/admin`);
-    console.log(`🔧 API Test: http://localhost:${PORT}/api-test`);
-    console.log(`📚 API Docs: http://localhost:${PORT}/api`);
-    console.log(`\n📋 Loaded ${Object.keys(apiHandlers).length} API endpoints`);
-    console.log(`⚡ Rate limits: Free=500/hour, Admin=Unlimited`);
+const server = app.listen(PORT, () => {
+    console.log(`
+╔══════════════════════════════════════════════════════╗
+║                🚀 Megan API v${config.api.version}                ║
+╠══════════════════════════════════════════════════════╣
+║ Port:        ${PORT}                                    ║
+║ Environment: ${config.nodeEnv}                          ║
+║ Endpoints:   ${Object.keys(apiHandlers).length} loaded            ║
+║ Rate Limit:  ${config.rateLimit.free.max}/hour (Free)             ║
+║ URL:         http://localhost:${PORT}                  ║
+║ API Docs:    http://localhost:${PORT}/api              ║
+╚══════════════════════════════════════════════════════╝
+    `);
 });
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
+    server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT received. Shutting down gracefully...');
+    server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+    });
+});
+
+module.exports = app;
