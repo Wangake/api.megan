@@ -1,30 +1,21 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
 const { createResponse } = require('./utils/response');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ======================
-// MIDDLEWARE
-// ======================
+// Middleware
 app.use(express.json());
-app.use(cors());
-app.use(helmet());
-app.use(morgan('dev'));
 
-// ======================
-// API HANDLER LOADING
-// ======================
+// Load all API handlers dynamically
 const apiHandlers = {};
 
 function loadAPIHandlers() {
     const apiDir = path.join(__dirname, 'api');
 
+    // Recursively find all .js files in api directory
     function scanDirectory(dir, prefix = '') {
         const items = fs.readdirSync(dir, { withFileTypes: true });
 
@@ -40,7 +31,7 @@ function loadAPIHandlers() {
                 try {
                     const handler = require(fullPath);
                     apiHandlers[endpointPath] = handler;
-                    console.log(`✅ Loaded: ${endpointPath}`);
+                    console.log(`✅ Loaded API: ${endpointPath}`);
                 } catch (error) {
                     console.error(`❌ Failed to load ${endpointPath}:`, error.message);
                 }
@@ -51,9 +42,7 @@ function loadAPIHandlers() {
     scanDirectory(apiDir);
 }
 
-// ======================
-// ROUTE SETUP
-// ======================
+// Create routes dynamically
 function setupRoutes() {
     Object.keys(apiHandlers).forEach(endpoint => {
         app.get(endpoint, async (req, res) => {
@@ -74,148 +63,81 @@ function setupRoutes() {
     });
 }
 
-// ======================
-// API INFO ENDPOINT
-// ======================
+// API Info endpoint
 app.get('/api', (req, res) => {
     const endpoints = Object.keys(apiHandlers).map(endpoint => ({
         endpoint: endpoint,
-        category: endpoint.split('/')[2] || 'tools',
-        method: 'GET'
+        method: 'GET',
+        example: `https://${req.headers.host}${endpoint}?param=value`
     }));
 
     res.json(createResponse({
         success: true,
-        name: "Megan API",
-        version: "2.0.0",
-        author: "Tracker Wanga",
+        message: "Megan API",
         endpoints: endpoints,
-        total_endpoints: endpoints.length,
-        contact: {
-            whatsapp: "https://wa.me/254769502217",
-            email: "contact@megan.co.ke",
-            website: "https://api.megan.co.ke"
-        }
+        total_endpoints: endpoints.length
     }, '/api', req.query, Date.now()));
 });
 
-// ======================
-// HEALTH CHECK
-// ======================
+// Health check
 app.get('/health', (req, res) => {
     res.json({
         status: 'healthy',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
-        endpoints_loaded: Object.keys(apiHandlers).length,
-        version: '2.0.0'
+        endpoints_loaded: Object.keys(apiHandlers).length
     });
 });
 
-// ======================
-// DASHBOARD
-// ======================
+// Dashboard
 app.get('/', (req, res) => {
     const endpoints = Object.keys(apiHandlers);
-    
-    res.send(`
-<!DOCTYPE html>
+
+    const html = `<!DOCTYPE html>
 <html>
 <head>
-    <title>Megan API v2.0</title>
+    <title>Megan API</title>
     <style>
-        body { font-family: Arial; margin: 40px; background: #0f172a; color: white; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .logo { color: #3b82f6; font-size: 2.5rem; font-weight: bold; }
-        .stats { display: flex; gap: 20px; margin: 20px 0; }
-        .stat { background: #1e293b; padding: 20px; border-radius: 10px; text-align: center; }
-        .endpoint-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin: 30px 0; }
-        .endpoint { background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; }
-        .endpoint:hover { border-color: #3b82f6; }
-        .endpoint-code { background: #0f172a; color: #60a5fa; padding: 5px 10px; border-radius: 4px; font-family: monospace; }
-        .test-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-        .footer { margin-top: 40px; text-align: center; color: #64748b; }
+        body { font-family: Arial; padding: 20px; max-width: 1000px; margin: auto; background: #0f172a; color: white; }
+        .endpoint { background: #1e293b; color: white; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #334155; }
+        code { background: #0f172a; color: #60a5fa; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+        .logo { color: #3b82f6; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; }
+        .test-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        .test-btn:hover { background: #2563eb; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">MEGAN API</div>
-        <p>Complete Developer Platform • By Wanga</p>
-        
-        <div class="stats">
-            <div class="stat">
-                <h3>${endpoints.length}</h3>
-                <p>Endpoints</p>
-            </div>
-            <div class="stat">
-                <h3>100%</h3>
-                <p>Uptime</p>
-            </div>
-            <div class="stat">
-                <h3>Unlimited</h3>
-                <p>Free Tier</p>
-            </div>
+    <div class="logo">MEGAN API</div>
+    <p>Complete Developer Platform • By Wanga</p>
+
+    <div class="grid">
+        ${endpoints.map(ep => `
+        <div class="endpoint">
+            <h3>${ep.split('/').pop()}</h3>
+            <code>GET ${ep}</code><br>
+            <button class="test-btn" onclick="window.open('${ep}?test=true', '_blank')">
+                Test Endpoint
+            </button>
         </div>
-        
-        <div class="endpoint-grid">
-            ${endpoints.slice(0, 12).map(ep => {
-                const name = ep.split('/').pop();
-                return `
-                <div class="endpoint">
-                    <h4>${name}</h4>
-                    <div class="endpoint-code">GET ${ep}</div>
-                    <button class="test-btn" onclick="window.open('${ep}?test=true', '_blank')">
-                        Test API
-                    </button>
-                </div>`;
-            }).join('')}
-        </div>
-        
-        <div class="footer">
-            <p>📚 <a href="/api" style="color: #60a5fa;">API Documentation</a></p>
-            <p>🏥 <a href="/health" style="color: #60a5fa;">Server Health</a></p>
-            <p>© 2024 Megan API | Created by Tracker Wanga</p>
-        </div>
+        `).join('')}
     </div>
+
+    <p><a href="/api" style="color: #60a5fa;">View all endpoints as JSON</a></p>
+    <p><a href="/health" style="color: #60a5fa;">Health Check</a></p>
 </body>
-</html>
-    `);
+</html>`;
+
+    res.send(html);
 });
 
-// ======================
-// 404 HANDLER
-// ======================
-app.use('*', (req, res) => {
-    if (req.accepts('html')) {
-        res.send('Page not found. Visit <a href="/">Home</a>');
-    } else {
-        res.json({
-            success: false,
-            error: 'Route not found',
-            available_endpoints: Object.keys(apiHandlers)
-        });
-    }
-});
-
-// ======================
-// INITIALIZE
-// ======================
+// Initialize
 loadAPIHandlers();
 setupRoutes();
 
-// ======================
-// START SERVER
-// ======================
+// Start server
 app.listen(PORT, () => {
-    console.log(`
-╔══════════════════════════════════════════════════════╗
-║                🚀 Megan API v2.0.0                   ║
-╠══════════════════════════════════════════════════════╣
-║ Port:        ${PORT}                                    ║
-║ Endpoints:   ${Object.keys(apiHandlers).length} loaded            ║
-║ Rate Limit:  Unlimited (Testing)                     ║
-║ URL:         http://localhost:${PORT}                  ║
-║ API Docs:    http://localhost:${PORT}/api              ║
-╚══════════════════════════════════════════════════════╝
-    `);
+    console.log(`\n✅ Megan API running on port ${PORT}`);
+    console.log(`📌 Dashboard: http://localhost:${PORT}`);
+    console.log(`📚 Loaded ${Object.keys(apiHandlers).length} API endpoints`);
 });
