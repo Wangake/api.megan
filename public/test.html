@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Testing API Config</h1>
+    <script src="assets/js/api-config.js"></script>
+    <script>
+        console.log("apiConfig exists?", typeof apiConfig !== 'undefined');
+        console.log("Categories:", apiConfig?.categories?.length);
+        console.log("First category:", apiConfig?.categories?.[0]);
+    </script>
+</body>
+</html>
