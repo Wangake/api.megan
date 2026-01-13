@@ -7,17 +7,16 @@ async function fetchFromElite(endpoint, params = {}) {
     try {
         const queryString = new URLSearchParams(params).toString();
         const url = `${ELITE_BASE}${endpoint}${queryString ? '?' + queryString : ''}`;
-        
+
         console.log(`[PROXY] Fetching: ${url}`);
-        
+
         const response = await fetch(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0',
-                'Accept': 'application/json',
-                'Accept-Language': 'en-US,en;q=0.9'
+                'Accept': 'application/json'
             }
         });
-        
+
         return await response.json();
     } catch (error) {
         console.error(`[PROXY ERROR] ${endpoint}:`, error.message);
