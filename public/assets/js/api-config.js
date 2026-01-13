@@ -279,7 +279,7 @@ const apiConfig = {
             endpoints: [
                 {
                     name: 'YouTube Search',
-                    path: '/api/media/ytsearch',
+                    path: '/api/youtube/ytsearch',
                     method: 'GET',
                     description: 'Search YouTube videos',
                     parameters: [
