@@ -1,11 +1,11 @@
-// Main Application Script
+// Main Application Script - WAITS for API config
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Megan API Frontend Initializing...');
 
     // Application State
     let currentEndpoint = null;
     let currentResponse = null;
-    let apiData = window.apiConfig; // Use the config from api-config.js
+    let apiData = null;
 
     // DOM Elements
     const apiCategoriesEl = document.getElementById('apiCategories');
@@ -23,6 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyResponseBtn = document.getElementById('copyResponseBtn');
     const responseOutputEl = document.getElementById('responseOutput');
     const endpointCountEl = document.getElementById('endpointCount');
+
+    // Wait for API config to be ready
+    function waitForConfig() {
+        if (window.apiConfigReady && window.apiConfig && window.apiConfig.categories) {
+            console.log('✅ API Config is ready!');
+            apiData = window.apiConfig;
+            init();
+        } else {
+            console.log('⏳ Waiting for API config...');
+            setTimeout(waitForConfig, 100);
+        }
+    }
 
     // Initialize
     function init() {
@@ -44,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="category-title">No API Data</div>
                     </div>
-                    <p style="text-align: center; color: var(--gray-light); padding: 2rem;">
+                    <p style="text-align: center; color: #94a3b8; padding: 2rem;">
                         Unable to load API configuration. Please check the console.
                     </p>
                 </div>
@@ -124,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="category-title">No Results Found</div>
                     </div>
-                    <p style="text-align: center; color: var(--gray-light); padding: 2rem;">
+                    <p style="text-align: center; color: #94a3b8; padding: 2rem;">
                         No APIs match your search. Try a different term.
                     </p>
                 </div>
@@ -208,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             paramsHTML = `
                 <div class="param-field">
-                    <div class="param-description" style="text-align: center; padding: 2rem; color: var(--gray-light);">
+                    <div class="param-description" style="text-align: center; padding: 2rem; color: #94a3b8;">
                         <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
                         This endpoint doesn't require any parameters.
                     </div>
@@ -270,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const paramDef = currentEndpoint.parameters.find(p => p.name === paramName);
 
             if (paramDef && paramDef.required && !value) {
-                input.style.borderColor = 'var(--error)';
+                input.style.borderColor = '#ef4444';
                 input.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.2)';
                 hasErrors = true;
             } else {
@@ -351,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Request failed:', error);
             statusBadgeEl.textContent = 'Failed';
             statusBadgeEl.className = 'status-badge status-error';
-            responseOutputEl.innerHTML = `<span style="color: var(--error)">Error: ${error.message}</span>`;
+            responseOutputEl.innerHTML = `<span style="color: #ef4444">Error: ${error.message}</span>`;
         } finally {
             sendRequestBtn.disabled = false;
             sendRequestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Request';
@@ -421,13 +433,13 @@ document.addEventListener('DOMContentLoaded', function() {
         paramInputs.forEach(input => {
             const paramName = input.dataset.param;
             let value = input.value;
-            
+
             if (input.tagName === 'SELECT') {
                 value = input.options[input.selectedIndex].value;
             } else {
                 value = value.trim();
             }
-            
+
             if (value) params[paramName] = value;
         });
 
@@ -484,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ Event listeners setup complete');
     }
 
-    // Initialize the application
-    init();
-    console.log('✅ Megan API Frontend ready!');
+    // Start waiting for API config
+    waitForConfig();
+    console.log('🔄 Waiting for API configuration...');
 });
