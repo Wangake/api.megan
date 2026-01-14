@@ -3,6 +3,8 @@
   "version": "2.0.0",
   "description": "Professional API platform with developer tools, validation, generation, and utilities",
   "main": "server.js",
+  "type": "commonjs",
+
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
@@ -11,18 +13,23 @@
     "restart": "pm2 restart ecosystem.config.js",
     "logs": "pm2 logs megan-api",
     "monitor": "pm2 monit",
+
     "test": "jest --coverage",
     "test:watch": "jest --watch",
+
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
+
     "docker:build": "docker build -t megan-api .",
     "docker:run": "docker run -p 3000:3000 --env-file .env megan-api",
     "docker:compose": "docker-compose up -d",
     "docker:compose:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
+
     "deploy": "git push origin main"
   },
+
   "keywords": [
     "api",
     "developer-tools",
@@ -32,46 +39,56 @@
     "qrcode",
     "base64",
     "random",
-    "quote"
+    "quote",
+    "nlp",
+    "text-analysis"
   ],
+
   "author": {
     "name": "Tracker Wanga",
     "email": "contact@megan.co.ke",
     "url": "https://api.megan.co.ke"
   },
+
   "license": "MIT",
+
   "repository": {
     "type": "git",
     "url": "https://github.com/Wangake/megan-api.git"
   },
+
   "bugs": {
     "url": "https://github.com/Wangake/megan-api/issues"
   },
+
   "homepage": "https://api.megan.co.ke",
+
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
   },
+
   "dependencies": {
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
-    "cors": "^2.8.5",
     "helmet": "^7.1.0",
-    "morgan": "^1.10.0",
-    "dotenv": "^16.3.1",
-    "qrcode": "^1.5.3",
-    "validator": "^13.11.0",
-    "axios": "^1.6.2",
+    "mime-types": "^2.1.35",
     "moment-timezone": "^0.5.43",
+    "natural": "^6.7.0",
+    "qrcode": "^1.5.3",
     "uuid": "^9.0.1",
-    "mime-types": "^2.1.35"
+    "validator": "^13.11.0"
   },
+
   "devDependencies": {
-    "nodemon": "^3.0.3",
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3",
     "eslint": "^8.53.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "pm2": "^5.3.0",
     "prettier": "^3.0.3",
-    "pm2": "^5.3.0"
+    "supertest": "^6.3.3"
   }
 }
