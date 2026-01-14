@@ -1,100 +1,78 @@
-const faker = require('faker');
+const { faker } = require('@faker-js/faker');
 
 module.exports = async function fakeDataHandler(req, res, startTime) {
-    const { 
-        type = 'user', 
-        count = 1,
-        locale = 'en_US',
-        seed 
-    } = req.query;
-    
-    const countNum = Math.min(parseInt(count), 100);
-    
-    if (seed) {
-        faker.seed(parseInt(seed));
+  const {
+    type = 'user',
+    count = 1,
+    locale = 'en'
+  } = req.query;
+
+  faker.locale = locale;
+
+  const limit = Math.min(parseInt(count) || 1, 20);
+  const records = [];
+
+  for (let i = 0; i < limit; i++) {
+    let record;
+
+    switch (type) {
+      case 'user':
+        record = {
+          id: faker.string.uuid(),
+          name: faker.person.fullName(),
+          username: faker.internet.userName(),
+          email: faker.internet.email(),
+          phone: faker.phone.number(),
+          avatar: faker.image.avatar(),
+          created_at: faker.date.past()
+        };
+        break;
+
+      case 'company':
+        record = {
+          id: faker.string.uuid(),
+          name: faker.company.name(),
+          industry: faker.company.buzzPhrase(),
+          domain: faker.internet.domainName(),
+          email: faker.internet.email(),
+          location: faker.location.city()
+        };
+        break;
+
+      case 'address':
+        record = {
+          street: faker.location.streetAddress(),
+          city: faker.location.city(),
+          country: faker.location.country(),
+          postal_code: faker.location.zipCode()
+        };
+        break;
+
+      case 'product':
+        record = {
+          id: faker.string.uuid(),
+          name: faker.commerce.productName(),
+          price: faker.commerce.price(),
+          category: faker.commerce.department()
+        };
+        break;
+
+      default:
+        return {
+          success: false,
+          error: 'Invalid type',
+          supported_types: ['user', 'company', 'address', 'product']
+        };
     }
-    
-    let data = [];
-    const generators = {
-        user: () => ({
-            id: faker.datatype.uuid(),
-            name: faker.name.findName(),
-            email: faker.internet.email(),
-            phone: faker.phone.phoneNumber(),
-            address: {
-                street: faker.address.streetAddress(),
-                city: faker.address.city(),
-                state: faker.address.state(),
-                zip: faker.address.zipCode(),
-                country: faker.address.country()
-            },
-            company: faker.company.companyName(),
-            job: faker.name.jobTitle(),
-            avatar: faker.image.avatar(),
-            website: faker.internet.url(),
-            bio: faker.lorem.paragraph()
-        }),
-        product: () => ({
-            id: faker.datatype.uuid(),
-            name: faker.commerce.productName(),
-            price: faker.commerce.price(),
-            description: faker.commerce.productDescription(),
-            category: faker.commerce.department(),
-            material: faker.commerce.productMaterial(),
-            color: faker.commerce.color(),
-            image: faker.image.imageUrl(),
-            rating: faker.datatype.float({ min: 1, max: 5, precision: 0.1 }),
-            inStock: faker.datatype.boolean()
-        }),
-        company: () => ({
-            id: faker.datatype.uuid(),
-            name: faker.company.companyName(),
-            catchPhrase: faker.company.catchPhrase(),
-            bs: faker.company.bs(),
-            logo: faker.image.business(),
-            type: faker.company.companySuffix(),
-            industry: faker.commerce.department(),
-            founded: faker.date.past(30).getFullYear(),
-            employees: faker.datatype.number({ min: 10, max: 10000 })
-        })
-    };
-    
-    const generator = generators[type] || generators.user;
-    
-    for (let i = 0; i < countNum; i++) {
-        data.push(generator());
-    }
-    
-    return {
-        success: true,
-        type: type,
-        count: countNum,
-        locale: locale,
-        seed_used: seed || 'random',
-        data: data,
-        schema: Object.keys(data[0] || {}),
-        formats: {
-            json: data,
-            csv: convertToCSV(data),
-            xml: convertToXML(data, type)
-        }
-    };
+
+    records.push(record);
+  }
+
+  return {
+    success: true,
+    generator: 'faker-js',
+    type,
+    count: records.length,
+    records
+  };
 };
-
-function convertToCSV(data) {
-    if (!data.length) return '';
-    const headers = Object.keys(data[0]);
-    const rows = data.map(obj => 
-        headers.map(header => JSON.stringify(obj[header] || '')).join(',')
-    );
-    return [headers.join(','), ...rows].join('\n');
-}
-
-function convertToXML(data, type) {
-    const items = data.map(item => 
-        Object.entries(item).map(([key, value]) => 
-            `<${key}>${value}</${key}>`
-        ).join('')
-    );
-    return `<?xml version="1.0"?><${type}s>${items.map(item => `<${type}>${item}</${type}>`).join('')}</${type}s>`;
-}
